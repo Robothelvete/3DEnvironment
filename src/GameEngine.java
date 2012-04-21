@@ -17,6 +17,10 @@ import javax.media.opengl.glu.GLU;
 
 import com.jogamp.opengl.util.Animator;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
@@ -30,7 +34,8 @@ public class GameEngine implements GLEventListener, KeyListener {
 	static GLCanvas canvas = new GLCanvas();
 	static Frame frame = new Frame("Gameframe");
 	static Animator animator = new Animator(canvas);
-
+	private GameObject[] gameObjects;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -51,6 +56,7 @@ public class GameEngine implements GLEventListener, KeyListener {
 	}
 
 	@Override
+	//TODO: check to see what this does in detail
 	public void init(GLAutoDrawable gLDrawable) {
 		GL2 gl = gLDrawable.getGL().getGL2();
 		gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
@@ -77,6 +83,11 @@ public class GameEngine implements GLEventListener, KeyListener {
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		//gl.glPushMatrix();
+		
+		//Render all objects
+		for(int i = 0; i < gameObjects.length; i++) {
+			gameObjects[i].draw(gl);
+		}
 	}
 
 	@Override
@@ -107,7 +118,8 @@ public class GameEngine implements GLEventListener, KeyListener {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		canvas.addGLEventListener(new GameEngine());
+		GameEngine ge = new GameEngine();
+		canvas.addGLEventListener(ge);
 		frame.add(canvas);
 		frame.setSize(640, 480);
 		frame.setUndecorated(true);
@@ -117,9 +129,51 @@ public class GameEngine implements GLEventListener, KeyListener {
 				exit();
 			}
 		});
+		
+		ge.setupFromFile();
 		frame.setVisible(true);
 		animator.start(); //Start main game loop
 		canvas.requestFocus();
 	}
 
+	/**
+	 * Sets up all game objects from a file
+	 */
+	public void setupFromFile() {
+		BufferedReader br;
+		
+		try {
+			br = new BufferedReader(new FileReader("gameobjects.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println("Couldn't find file \"gameobjects.txt\"");
+			exit();
+			return; // compiler fluff
+		}
+		
+		try {
+			//TODO: actually do what this function is meant to do
+			//First line says how many objects there are
+			gameObjects = new GameObject[Integer.parseInt(br.readLine())];
+			
+			String line = br.readLine();
+			while (line != null) {
+				
+				line = br.readLine();
+			}
+
+		} catch (IOException e) {
+			try {
+				br.close();
+			} catch (IOException e1) {
+			}
+			System.err.println("Couldn't read \"gameobjects.txt\"");
+			exit();
+		} finally {
+			try {
+				br.close();
+			} catch (IOException e) {
+				// Well, you're on your own from here boy
+			}
+		}
+	}
 }
