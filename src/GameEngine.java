@@ -24,10 +24,12 @@ import java.io.IOException;
 
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+
 /**
  * Main "game" engine with setup and the main loop
+ * 
  * @author Robert
- *
+ * 
  */
 public class GameEngine implements GLEventListener, KeyListener {
 	static GLU glu = new GLU();
@@ -35,11 +37,30 @@ public class GameEngine implements GLEventListener, KeyListener {
 	static Frame frame = new Frame("Gameframe");
 	static Animator animator = new Animator(canvas);
 	private GameObject[] gameObjects;
-	
+	private float temprotator = 0.0f;
+	private Player player;
+
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		/*
+		 * if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { exit(); }
+		 */
+		switch (e.getKeyCode()) {
+		case (KeyEvent.VK_ESCAPE):
 			exit();
+			break;
+		case (KeyEvent.VK_W):
+			player.move(0);
+			break;
+		case (KeyEvent.VK_D):
+			player.move(1);
+		break;
+		case (KeyEvent.VK_S):
+			player.move(2);
+		break;
+		case (KeyEvent.VK_A):
+			player.move(3);
+		break;
 		}
 	}
 
@@ -56,7 +77,7 @@ public class GameEngine implements GLEventListener, KeyListener {
 	}
 
 	@Override
-	//TODO: check to see what this does in detail
+	// TODO: check to see what this does in detail
 	public void init(GLAutoDrawable gLDrawable) {
 		GL2 gl = gLDrawable.getGL().getGL2();
 		gl.glShadeModel(GLLightingFunc.GL_SMOOTH);
@@ -82,16 +103,22 @@ public class GameEngine implements GLEventListener, KeyListener {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-		//gl.glPushMatrix();
-		
-		//Render all objects
-		for(int i = 0; i < gameObjects.length; i++) {
+		player.givePosToOGL(gl);
+		//gl.glTranslatef(0.0f, 0.0f, -10.0f);// TODO
+		// gl.glPushMatrix();
+
+		//gl.glRotatef(temprotator, 1.0f, 0.0f, 0.0f);
+		// gl.glRotatef(temprotator, 0.0f, 0.0f, 0.0f);
+		// Render all objects
+		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
+
+		//temprotator += 0.1f;
 	}
 
 	@Override
-	//TODO: check to see what this does in detail
+	// TODO: check to see what this does in detail
 	public void reshape(GLAutoDrawable gLDrawable, int x, int y, int width, int height) {
 		GL2 gl = gLDrawable.getGL().getGL2();
 		if (height <= 0) {
@@ -129,10 +156,10 @@ public class GameEngine implements GLEventListener, KeyListener {
 				exit();
 			}
 		});
-		
+
 		ge.setupFromFile();
 		frame.setVisible(true);
-		animator.start(); //Start main game loop
+		animator.start(); // Start main game loop
 		canvas.requestFocus();
 	}
 
@@ -141,25 +168,37 @@ public class GameEngine implements GLEventListener, KeyListener {
 	 */
 	public void setupFromFile() {
 		BufferedReader br;
-		
+
 		try {
-			br = new BufferedReader(new FileReader("gameobjects.txt"));
+			br = new BufferedReader(new FileReader("resources/gameobjects.txt"));
 		} catch (FileNotFoundException e) {
 			System.err.println("Couldn't find file \"gameobjects.txt\"");
 			exit();
 			return; // compiler fluff
 		}
-		
+
 		try {
-			//TODO: actually do what this function is meant to do
-			//First line says how many objects there are
+			// TODO: actually do what this function is meant to do
+			// First line says how many objects there are
 			gameObjects = new GameObject[Integer.parseInt(br.readLine())];
-			
+
 			String line = br.readLine();
+			int counter = 0;
 			while (line != null) {
-				
+				String[] allinfo = line.split(" ");
+
+				switch (allinfo[0]) {
+				case "wall":
+					gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+							parseDoubleArrays(allinfo[3]));
+				}
+
+				counter++;
 				line = br.readLine();
 			}
+
+			// TODO: set start position of player
+			player = new Player();
 
 		} catch (IOException e) {
 			try {
@@ -175,5 +214,16 @@ public class GameEngine implements GLEventListener, KeyListener {
 				// Well, you're on your own from here boy
 			}
 		}
+	}
+
+	public double[] parseDoubleArrays(String source) {
+		double[] arr = new double[3]; // will this present a problem or will it always be 3D?
+
+		String[] points = source.split(",");
+		arr[0] = Double.parseDouble(points[0]);
+		arr[1] = Double.parseDouble(points[1]);
+		arr[2] = Double.parseDouble(points[2]);
+
+		return arr;
 	}
 }

@@ -21,7 +21,7 @@ public interface GameObject {
 	 * @return False if object cannot rotate so
 	 */
 	//TODO: I feel like I should change the parameters here to something better....
-	public boolean rotate(float x, float y,float z, float degrees);
+	public boolean rotate(double x, double y,double z, double degrees);
 	
 	/**
 	 * Moves the object
@@ -30,5 +30,5 @@ public interface GameObject {
 	 * @param z
 	 * @return False if object cannot be moved so
 	 */
-	public boolean move(float x, float y, float z);
+	public boolean move(double x, double y, double z);
 }
