@@ -24,6 +24,7 @@ public class Wall implements GameObject {
 		
 		for(int i = 0; i < 4; i++) {
 			gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
+			gl.glColor3f(1.0f, 0.0f, 0.0f);//TODO
 		}
 		gl.glEnd();
 	}

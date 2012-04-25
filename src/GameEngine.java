@@ -1,7 +1,11 @@
+import java.awt.AWTException;
 import java.awt.Component;
 import java.awt.Frame;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -31,15 +35,17 @@ import javax.media.opengl.GLEventListener;
  * @author Robert
  * 
  */
-public class GameEngine implements GLEventListener, KeyListener {
+public class GameEngine implements GLEventListener, KeyListener, MouseMotionListener {
 	static GLU glu = new GLU();
 	static GLCanvas canvas = new GLCanvas();
 	static Frame frame = new Frame("Gameframe");
 	static Animator animator = new Animator(canvas);
 	private GameObject[] gameObjects;
-	private float temprotator = 0.0f;
 	private Player player;
-
+	private static int centerX;
+	private static int centerY;
+	private Robot robot;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		/*
@@ -64,6 +70,13 @@ public class GameEngine implements GLEventListener, KeyListener {
 		}
 	}
 
+	public GameEngine() {
+		try {
+			robot = new Robot();
+		} catch (AWTException e) {
+			exit();
+		}
+	}
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -86,7 +99,14 @@ public class GameEngine implements GLEventListener, KeyListener {
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LEQUAL);
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+		
+		//add keyboard input listener
 		((Component) gLDrawable).addKeyListener(this);
+		
+		//add mouse motion input listener
+		((Component) gLDrawable).addMouseMotionListener(this);
+		//center mouse
+		robot.mouseMove(centerX, centerY);
 	}
 
 	@Override
@@ -103,18 +123,14 @@ public class GameEngine implements GLEventListener, KeyListener {
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-		player.givePosToOGL(gl);
-		//gl.glTranslatef(0.0f, 0.0f, -10.0f);// TODO
-		// gl.glPushMatrix();
+		
+		player.render(gl, glu);
 
-		//gl.glRotatef(temprotator, 1.0f, 0.0f, 0.0f);
-		// gl.glRotatef(temprotator, 0.0f, 0.0f, 0.0f);
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
 
-		//temprotator += 0.1f;
 	}
 
 	@Override
@@ -148,7 +164,7 @@ public class GameEngine implements GLEventListener, KeyListener {
 		GameEngine ge = new GameEngine();
 		canvas.addGLEventListener(ge);
 		frame.add(canvas);
-		frame.setSize(640, 480);
+		//frame.setSize(1600, 900);
 		frame.setUndecorated(true);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.addWindowListener(new WindowAdapter() {
@@ -159,7 +175,11 @@ public class GameEngine implements GLEventListener, KeyListener {
 
 		ge.setupFromFile();
 		frame.setVisible(true);
-		animator.start(); // Start main game loop
+		
+		centerX = frame.getSize().width/2;
+		centerY = frame.getSize().height/2;
+		
+		animator.start(); // Start main game loop`
 		canvas.requestFocus();
 	}
 
@@ -191,7 +211,10 @@ public class GameEngine implements GLEventListener, KeyListener {
 				case "wall":
 					gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 							parseDoubleArrays(allinfo[3]));
+				case "line":
+					gameObjects[counter] = new Line(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]), parseDoubleArrays(allinfo[3]));
 				}
+					
 
 				counter++;
 				line = br.readLine();
@@ -217,7 +240,7 @@ public class GameEngine implements GLEventListener, KeyListener {
 	}
 
 	public double[] parseDoubleArrays(String source) {
-		double[] arr = new double[3]; // will this present a problem or will it always be 3D?
+		double[] arr = new double[3]; // will this present a problem or will it always be a point in 3D?
 
 		String[] points = source.split(",");
 		arr[0] = Double.parseDouble(points[0]);
@@ -225,5 +248,20 @@ public class GameEngine implements GLEventListener, KeyListener {
 		arr[2] = Double.parseDouble(points[2]);
 
 		return arr;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		//System.out.println(e.getX() + " " + e.getY());
+		
+		player.changeView(centerX - e.getX(),centerY - e.getY());
+		robot.mouseMove(centerX, centerY);
 	}
 }
