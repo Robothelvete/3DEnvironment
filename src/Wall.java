@@ -20,11 +20,12 @@ public class Wall implements GameObject {
 	@Override
 	public void draw(GL2 gl) {
 		// TODO Colors, validation?
-		
+		System.out.println("lol?");
 		gl.glBegin(GL2.GL_QUADS);
 			gl.glColor3dv(color, 0);
 			for(int i = 0; i < 4; i++) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
+				System.out.println(corners[i][0] + " " + corners[i][1] + " " + corners[i][2]);
 			}
 		gl.glEnd();
 	}

@@ -45,7 +45,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	private static int centerX;
 	private static int centerY;
 	private Robot robot;
-
+	//private boolean RUN = true;
+	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -128,16 +129,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
-		//gl.glTranslated(0.0, 0.0, -10.0);
-		//player.render(gl, glu);
-		gl.glBegin(GL2.GL_QUADS);
-		 	gl.glColor3dv(new double[]{0.0,1.0,1.0}, 0);   // set the color of the quad
-	         gl.glVertex3d(-1.0, 1.0, 0.0);   // Top Left
-	         gl.glVertex3d( 1.0, 1.0, 0.0);   // Top Right
-	         gl.glVertex3d( 1.0,-1.0, 0.0);   // Bottom Right
-	         gl.glVertex3d(-1.0,-1.0, 0.0);   // Bottom Left
-		     // Done Drawing The Quad
-	    gl.glEnd();
+
 	}
 
 	@Override
@@ -219,9 +211,11 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 					case "wall":
 						gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]), parseDoubleArrays(allinfo[4]));
+						break;
 					case "line":
 						gameObjects[counter] = new Line(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]));
+						break;
 					}
 					counter++;
 				}
