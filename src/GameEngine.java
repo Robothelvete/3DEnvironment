@@ -45,7 +45,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	private static int centerX;
 	private static int centerY;
 	private Robot robot;
-	
+
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
@@ -57,13 +57,13 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			break;
 		case (KeyEvent.VK_D):
 			player.move(1);
-		break;
+			break;
 		case (KeyEvent.VK_S):
 			player.move(2);
-		break;
+			break;
 		case (KeyEvent.VK_A):
 			player.move(3);
-		break;
+			break;
 		}
 	}
 
@@ -74,6 +74,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			exit();
 		}
 	}
+
 	@Override
 	public void keyReleased(KeyEvent arg0) {
 		// TODO Auto-generated method stub
@@ -96,13 +97,13 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LEQUAL);
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
-		
-		//add keyboard input listener
+
+		// add keyboard input listener
 		((Component) gLDrawable).addKeyListener(this);
-		
-		//add mouse motion input listener
+
+		// add mouse motion input listener
 		((Component) gLDrawable).addMouseMotionListener(this);
-		//center mouse
+		// center mouse
 		robot.mouseMove(centerX, centerY);
 	}
 
@@ -120,14 +121,23 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-		
+
 		player.render(gl, glu);
 
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
-
+		//gl.glTranslated(0.0, 0.0, -10.0);
+		//player.render(gl, glu);
+		gl.glBegin(GL2.GL_QUADS);
+		 	gl.glColor3dv(new double[]{0.0,1.0,1.0}, 0);   // set the color of the quad
+	         gl.glVertex3d(-1.0, 1.0, 0.0);   // Top Left
+	         gl.glVertex3d( 1.0, 1.0, 0.0);   // Top Right
+	         gl.glVertex3d( 1.0,-1.0, 0.0);   // Bottom Right
+	         gl.glVertex3d(-1.0,-1.0, 0.0);   // Bottom Left
+		     // Done Drawing The Quad
+	    gl.glEnd();
 	}
 
 	@Override
@@ -161,7 +171,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		GameEngine ge = new GameEngine();
 		canvas.addGLEventListener(ge);
 		frame.add(canvas);
-		//frame.setSize(1600, 900);
+		// frame.setSize(1600, 900);
 		frame.setUndecorated(true);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.addWindowListener(new WindowAdapter() {
@@ -172,10 +182,10 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 		ge.setupFromFile();
 		frame.setVisible(true);
-		
-		centerX = frame.getSize().width/2;
-		centerY = frame.getSize().height/2;
-		
+
+		centerX = frame.getSize().width / 2;
+		centerY = frame.getSize().height / 2;
+
 		animator.start(); // Start main game loop`
 		canvas.requestFocus();
 	}
@@ -202,18 +212,19 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			String line = br.readLine();
 			int counter = 0;
 			while (line != null) {
-				String[] allinfo = line.split(" ");
+				if (!line.startsWith("#")) { //ignore comments
+					String[] allinfo = line.split(" ");
 
-				switch (allinfo[0]) {
-				case "wall":
-					gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
-							parseDoubleArrays(allinfo[3]));
-				case "line":
-					gameObjects[counter] = new Line(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]), parseDoubleArrays(allinfo[3]));
+					switch (allinfo[0]) {
+					case "wall":
+						gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+								parseDoubleArrays(allinfo[3]), parseDoubleArrays(allinfo[4]));
+					case "line":
+						gameObjects[counter] = new Line(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+								parseDoubleArrays(allinfo[3]));
+					}
+					counter++;
 				}
-					
-
-				counter++;
 				line = br.readLine();
 			}
 
@@ -250,12 +261,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		player.changeView(centerX - e.getX(),centerY - e.getY());
+		player.changeView(centerX - e.getX(), centerY - e.getY());
 		robot.mouseMove(centerX, centerY);
 	}
 }

@@ -1,5 +1,4 @@
 import javax.media.opengl.GL2;
-import javax.media.opengl.fixedfunc.GLMatrixFunc;
 import javax.media.opengl.glu.GLU;
 
 /**
@@ -18,7 +17,7 @@ public class Player {
 	private static final double mouseSense = 0.002f * Math.PI;
 
 	public Player(){
-		pos = new double[]{0.0f, 2.0f, -10.0f};//TODO
+		pos = new double[]{0.0, 2.0, -10.0};//TODO
 	}
 	
 	/**
@@ -53,9 +52,16 @@ public class Player {
 	 * @param gl
 	 */
 	public void render(GL2 gl, GLU glu) {
+/*		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+		gl.glLoadIdentity();*/
+		
+		
 		glu.gluLookAt(pos[0], pos[1], pos[2], //the camera position 
 				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2] + Math.cos(yrot), //give angle relative to position
 				0, 1, 0); //we don't tilt our heads
+		/*
+		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+		gl.glLoadIdentity();*/
 	}
 	
 	/**
@@ -65,6 +71,10 @@ public class Player {
 	 */
 	public void changeView(int deltaX, int deltaY) {
 		yrot += deltaX * mouseSense;
-		xrot += deltaY * mouseSense;
+		
+		double possibleX = xrot + deltaY * mouseSense;
+		if(Math.abs(possibleX) < Math.PI/2) {
+			xrot += deltaY * mouseSense;
+		}
 	}
 }

@@ -13,9 +13,8 @@ public class Line implements GameObject {
 	}
 	@Override
 	public void draw(GL2 gl) {
-		// TODO Auto-generated method stub
 		gl.glBegin(GL2.GL_LINES);
-		gl.glColor3dv(color, 0);
+			gl.glColor3dv(color, 0);
 			gl.glVertex3d(points[0][0], points[0][1], points[0][2]);
 			gl.glVertex3d(points[1][0], points[1][1], points[1][2]);
 		gl.glEnd();
