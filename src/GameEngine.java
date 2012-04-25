@@ -48,9 +48,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		/*
-		 * if (e.getKeyCode() == KeyEvent.VK_ESCAPE) { exit(); }
-		 */
 		switch (e.getKeyCode()) {
 		case (KeyEvent.VK_ESCAPE):
 			exit();
@@ -258,9 +255,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-		//System.out.println(e.getX() + " " + e.getY());
-		
 		player.changeView(centerX - e.getX(),centerY - e.getY());
 		robot.mouseMove(centerX, centerY);
 	}

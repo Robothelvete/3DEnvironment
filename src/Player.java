@@ -43,10 +43,8 @@ public class Player {
 				leftright = 1;
 			
 			pos[0] += Math.cos(yrot) * speed * leftright;
-			pos[2] += Math.sin(yrot) * speed * leftright;
+			pos[2] -= Math.sin(yrot) * speed * leftright; //negative because I've switched the axles
 		}
-		System.out.println(pos[0] + " " + pos[1] + " " + pos[2]);
-		System.out.println(Math.sin(yrot) + " " + Math.cos(yrot));
 		return true;
 	}
 	
@@ -55,23 +53,9 @@ public class Player {
 	 * @param gl
 	 */
 	public void render(GL2 gl, GLU glu) {
-		//gl.glTranslated(-pos[0], -pos[1], -pos[2]);
-		//gl.glRotated(270, 1.0f, 0.0f, 0.0f);
-		//gl.glRotated(toDegrees(yrot), 0.0f, 1.0f, 0.0f);
-//		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-//		gl.glLoadIdentity();
-//		
-//		glu.gluPerspective(45, 16/9, 1, 1000);
-		
-//		glu.gluLookAt(pos[0], pos[1], pos[2], 
-//				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2],
-//				0, 1, 0);
-		glu.gluLookAt(pos[0], pos[1], pos[2], 
-				//yrot, xrot, 0.0f,
-				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2] + Math.cos(yrot),
-				0, 1, 0);
-//		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-//        gl.glLoadIdentity();
+		glu.gluLookAt(pos[0], pos[1], pos[2], //the camera position 
+				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2] + Math.cos(yrot), //give angle relative to position
+				0, 1, 0); //we don't tilt our heads
 	}
 	
 	/**
@@ -82,14 +66,5 @@ public class Player {
 	public void changeView(int deltaX, int deltaY) {
 		yrot += deltaX * mouseSense;
 		xrot += deltaY * mouseSense;
-//		yrot += deltaX/5;
-//		xrot += deltaY/5;
 	}
-	private double toDegrees(double rads) {
-		return rads * 180 / Math.PI;
-	}
-/*	
-	private double toRadians(double degs){
-		
-	}*/
 }
