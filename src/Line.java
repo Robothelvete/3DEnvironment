@@ -1,6 +1,10 @@
 import javax.media.opengl.GL2;
 
-
+/**
+ * A vector in 3D space
+ * @author Robert
+ *
+ */
 public class Line implements GameObject {
 	private double[][] points;
 	private double[] color;

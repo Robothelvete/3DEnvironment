@@ -14,7 +14,7 @@ public class Player {
 	private double xrot; 
 	private double yrot;
 	private static final double speed = 0.2f;
-	private static final double mouseSense = 0.002f * Math.PI;
+	private static final double mouseSense = 0.001f * Math.PI;
 
 	public Player(){
 		pos = new double[]{0.0, 2.0, -10.0};//TODO

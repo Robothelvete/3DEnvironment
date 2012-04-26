@@ -45,7 +45,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	private static int centerX;
 	private static int centerY;
 	private Robot robot;
-	//private boolean RUN = true;
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -211,10 +210,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 					case "wall":
 						gameObjects[counter] = new Wall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]), parseDoubleArrays(allinfo[4]));
-						break;
+						break;// <-- that took me over an hour of bugtracking to remember
 					case "line":
 						gameObjects[counter] = new Line(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]));
+						break;
+					case "thickwall":
+						gameObjects[counter] = new ThickWall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+								parseDoubleArrays(allinfo[3]), Double.parseDouble(allinfo[4]), parseDoubleArrays(allinfo[5]));
 						break;
 					}
 					counter++;
