@@ -11,6 +11,7 @@ public class Lightsource {
 	private float[] pos;
     private float[] lightColor;
     private int lightnum;
+    
 	public Lightsource(int lightnum, float[] positions, float[] color) {
 		this.lightnum = lightnum + 16384; //the enum for lights start at this value
 		pos = positions;
@@ -20,5 +21,10 @@ public class Lightsource {
 	
 	public void draw(GL2 gl) {
 		gl.glLightfv(lightnum, GLLightingFunc.GL_POSITION, pos, 0);
+	}
+	
+	public void init(GL2 gl) {
+		gl.glLightfv(lightnum, GLLightingFunc.GL_SPECULAR, lightColor, 0);
+		gl.glEnable(lightnum);
 	}
 }

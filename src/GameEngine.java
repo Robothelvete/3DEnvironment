@@ -102,7 +102,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
 		//Let there be light!
-		float[] lightPos = {0, 5, 20, 1f};
+		/*float[] lightPos = {0, 5, 20, 1f};
 		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
         float[] lightColorSpecular = {0.8f, 0.8f, 0.8f, 1f};
         
@@ -111,8 +111,15 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
         gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_SPECULAR, lightColorSpecular, 0);
 		
 		gl.glEnable(GLLightingFunc.GL_LIGHT0);
-        gl.glEnable(GLLightingFunc.GL_LIGHTING);
-
+        gl.glEnable(GLLightingFunc.GL_LIGHTING);*/
+		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
+		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
+		
+		for (int i = 0; i < lightsources.length; i++) {
+			lightsources[i].init(gl);
+		}
+		
+		gl.glEnable(GLLightingFunc.GL_LIGHTING);
 		
 		// add keyboard input listener
 		((Component) gLDrawable).addKeyListener(this);
@@ -139,7 +146,11 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glLoadIdentity();
 		
 		player.render(gl, glu);
-
+		
+		//place out the lights
+		for (int i = 0; i < lightsources.length; i++) {
+			lightsources[i].draw(gl);
+		}
 		//float[] lightPos = {0, 5, 20, 1f};
 		//gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
 		
@@ -319,13 +330,18 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	}
 
 	public float[] parseFloatArrays(String source) {
-		float[] arr = new float[3]; // will this present a problem or will it always be a point in 3D?
-
 		String[] points = source.split(",");
+		
+		float[] arr = new float[points.length]; // will this present a problem or will it always be a point in 3D?
+		
+		for (int i = 0; i < points.length; i++) {
+			arr[i] = Float.parseFloat(points[i]);
+		}
+		/*
 		arr[0] = Float.parseFloat(points[0]);
 		arr[1] = Float.parseFloat(points[1]);
 		arr[2] = Float.parseFloat(points[2]);
-
+*/
 		return arr;
 	}
 
