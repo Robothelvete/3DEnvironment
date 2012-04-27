@@ -1,4 +1,6 @@
+import javax.media.opengl.GL;
 import javax.media.opengl.GL2;
+import javax.media.opengl.fixedfunc.GLLightingFunc;
 
 /**
  * A 2-dimensional rectangle
@@ -25,10 +27,19 @@ public class Wall implements GameObject {
 	public void draw(GL2 gl) {
 		// TODO Colors, validation?
 		gl.glBegin(GL2.GL_QUADS);
-			gl.glColor3dv(color, 0);
+			//gl.glColor3dv(color, 0);
+			float[] rgba = new float[] {(float)color[0],(float)color[1],(float)color[2],1.0f};
+			gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_AMBIENT, rgba, 0);
+	        gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_SPECULAR, rgba, 0);
+	        gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_DIFFUSE, rgba, 0);
+	        gl.glMaterialf(GL.GL_FRONT, GLLightingFunc.GL_SHININESS, 0.5f);
+        
+	        gl.glNormal3d(0, 1, 0);
 			for(int i = 0; i < 4; i++) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
 			}
+			
+			
 		gl.glEnd();
 	}
 

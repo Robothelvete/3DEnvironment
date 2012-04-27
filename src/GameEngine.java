@@ -97,7 +97,20 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glEnable(GL.GL_DEPTH_TEST);
 		gl.glDepthFunc(GL.GL_LEQUAL);
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
+		
+		//Let there be light!
+		float[] lightPos = {0, 5, 20, 1f};
+		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
+        float[] lightColorSpecular = {0.8f, 0.8f, 0.8f, 1f};
+        
+        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
+        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
+        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_SPECULAR, lightColorSpecular, 0);
+		
+		gl.glEnable(GLLightingFunc.GL_LIGHT0);
+        gl.glEnable(GLLightingFunc.GL_LIGHTING);
 
+		
 		// add keyboard input listener
 		((Component) gLDrawable).addKeyListener(this);
 
@@ -121,9 +134,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glClear(GL.GL_COLOR_BUFFER_BIT);
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
-
+		
 		player.render(gl, glu);
 
+		float[] lightPos = {0, 5, 20, 1f};
+		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
+		
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
