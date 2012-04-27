@@ -112,8 +112,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		
 		gl.glEnable(GLLightingFunc.GL_LIGHT0);
         gl.glEnable(GLLightingFunc.GL_LIGHTING);*/
-		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
-		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
+//		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
+//		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
 		
 		for (int i = 0; i < lightsources.length; i++) {
 			lightsources[i].init(gl);
@@ -296,7 +296,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			while (line != null) {
 				if (!line.startsWith("#")) { //ignore comments
 					String[] allinfo = line.split(" ");
-					lightsources[counter] = new Lightsource(counter, parseFloatArrays(allinfo[0]), parseFloatArrays(allinfo[0]));
+					lightsources[counter] = new Lightsource(counter, parseFloatArrays(allinfo[0]), parseFloatArrays(allinfo[1]), parseFloatArrays(allinfo[2]));
 					counter++;
 				}
 				line = br.readLine();
