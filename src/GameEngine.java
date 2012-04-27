@@ -1,7 +1,9 @@
 import java.awt.AWTException;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Frame;
 import java.awt.Robot;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -186,6 +188,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 				exit();
 			}
 		});
+		
+		//hide cursor
+		Toolkit t = Toolkit.getDefaultToolkit();
+		java.awt.Image i = new java.awt.image.BufferedImage(1, 1, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+	    Cursor noCursor = t.createCustomCursor(i, new java.awt.Point(0, 0), "none"); 
+		frame.setCursor(noCursor);
 
 		ge.setupFromFile();
 		frame.setVisible(true);
