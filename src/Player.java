@@ -13,7 +13,7 @@ public class Player {
 	//we store these bad boys as radians however
 	private double xrot; 
 	private double yrot;
-	private static final double speed = 0.2f;
+	private static final double speed = 0.4f;
 	private static final double mouseSense = 0.001f * Math.PI;
 
 	public Player(){

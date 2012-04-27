@@ -27,7 +27,7 @@ public class ThickWall implements GameObject {
 			angle = Math.PI/2;
 		}
 		else {
-			angle = Math.PI/2 - Math.atan(deltaZ/deltaX);
+			angle = Math.atan(deltaZ/deltaX);
 		}
 		double offsetX = Math.sin(angle) * thickness;
 		double offsetZ = Math.cos(angle) * thickness;
@@ -51,6 +51,8 @@ public class ThickWall implements GameObject {
 			}
 			
 			//0 1 5 4, 2 3 7 6, 1 5 6 2
+			
+			//The two umm... "sides"
 			for (int i = 0; i < 3; i += 2) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
 				gl.glVertex3d(corners[i + 1][0], corners[i + 1][1], corners[i + 1][2]);
@@ -58,6 +60,7 @@ public class ThickWall implements GameObject {
 				gl.glVertex3d(corners[i + 4][0], corners[i + 4][1], corners[i + 4][2]);
 			}
 			
+			//and lastly, the top. (a wall is placed on the ground, shut up)
 			gl.glVertex3d(corners[1][0], corners[1][1], corners[1][2]);
 			gl.glVertex3d(corners[5][0], corners[5][1], corners[5][2]);
 			gl.glVertex3d(corners[6][0], corners[6][1], corners[6][2]);
