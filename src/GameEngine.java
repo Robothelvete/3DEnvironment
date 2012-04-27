@@ -43,6 +43,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	static Frame frame = new Frame("Gameframe");
 	static Animator animator = new Animator(canvas);
 	private GameObject[] gameObjects;
+	private Lightsource[] lightsources;
 	private Player player;
 	private static int centerX;
 	private static int centerY;
@@ -139,8 +140,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		
 		player.render(gl, glu);
 
-		float[] lightPos = {0, 5, 20, 1f};
-		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
+		//float[] lightPos = {0, 5, 20, 1f};
+		//gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
 		
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
@@ -266,6 +267,44 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 				// Well, you're on your own from here boy
 			}
 		}
+		
+		
+		//now read in the lights
+		try {
+			br = new BufferedReader(new FileReader("resources/lightsources.txt"));
+		} catch (FileNotFoundException e) {
+			System.err.println("Couldn't find file \"lightsources.txt\"");
+			exit();
+			return; // compiler fluff
+		}
+		
+		try {
+			lightsources = new Lightsource[Integer.parseInt(br.readLine())];
+			String line = br.readLine();
+			int counter = 0;
+			while (line != null) {
+				if (!line.startsWith("#")) { //ignore comments
+					String[] allinfo = line.split(" ");
+					lightsources[counter] = new Lightsource(counter, parseFloatArrays(allinfo[0]), parseFloatArrays(allinfo[0]));
+					counter++;
+				}
+				line = br.readLine();
+
+			}
+		} catch (IOException e) {
+		try {
+			br.close();
+		} catch (IOException e1) {
+		}
+		System.err.println("Couldn't read \"lightsources.txt\"");
+		exit();
+	} finally {
+		try {
+			br.close();
+		} catch (IOException e) {
+			// Well, you're on your own from here boy
+		}
+	}
 	}
 
 	public double[] parseDoubleArrays(String source) {
@@ -275,6 +314,17 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		arr[0] = Double.parseDouble(points[0]);
 		arr[1] = Double.parseDouble(points[1]);
 		arr[2] = Double.parseDouble(points[2]);
+
+		return arr;
+	}
+
+	public float[] parseFloatArrays(String source) {
+		float[] arr = new float[3]; // will this present a problem or will it always be a point in 3D?
+
+		String[] points = source.split(",");
+		arr[0] = Float.parseFloat(points[0]);
+		arr[1] = Float.parseFloat(points[1]);
+		arr[2] = Float.parseFloat(points[2]);
 
 		return arr;
 	}
