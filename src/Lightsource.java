@@ -3,7 +3,7 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 
 
 /**
- * Class to hold info about a lightsource
+ * Class control a lightsource
  * @author Robert
  *
  */
@@ -20,8 +20,15 @@ public class Lightsource {
 		ambientColor = ambcolor;
 	}
 	
+	/**
+	 * Renders the lightsource to the environment
+	 * @param gl
+	 */
 	public void draw(GL2 gl) {
 		gl.glLightfv(lightnum, GLLightingFunc.GL_POSITION, pos, 0);
+		//Since opengl itself keeps track of it's lightsources, and it has already been initialized,
+		//as long as we don't need to change the light itself, only the position needs to be fed in to opengl again
+		//so it can place it out correctly in accordance with the players updated position
 	}
 	
 	public void init(GL2 gl) {

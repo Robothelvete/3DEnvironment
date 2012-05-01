@@ -151,8 +151,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < lightsources.length; i++) {
 			lightsources[i].draw(gl);
 		}
-		//float[] lightPos = {0, 5, 20, 1f};
-		//gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
 		
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
@@ -192,7 +190,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		GameEngine ge = new GameEngine();
 		canvas.addGLEventListener(ge);
 		frame.add(canvas);
-		// frame.setSize(1600, 900);
 		frame.setUndecorated(true);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.addWindowListener(new WindowAdapter() {
@@ -219,6 +216,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 	/**
 	 * Sets up all game objects from a file
+	 * TODO: clean this mess up
 	 */
 	public void setupFromFile() {
 		BufferedReader br;
@@ -318,30 +316,34 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	}
 	}
 
+	/**
+	 * Parses a comma-separated list of doubles as an array of such
+	 * @param source
+	 * @return
+	 */
 	public double[] parseDoubleArrays(String source) {
-		double[] arr = new double[3]; // will this present a problem or will it always be a point in 3D?
-
 		String[] points = source.split(",");
-		arr[0] = Double.parseDouble(points[0]);
-		arr[1] = Double.parseDouble(points[1]);
-		arr[2] = Double.parseDouble(points[2]);
+		double[] arr = new double[points.length]; 
 
+		for (int i = 0; i < points.length; i++) {
+			arr[i] = Double.parseDouble(points[i]);
+		}
+		
 		return arr;
 	}
 
+	/**
+	 * Parses a comma-separated list of floats as an array of such
+	 * @param source
+	 * @return
+	 */
 	public float[] parseFloatArrays(String source) {
 		String[] points = source.split(",");
-		
-		float[] arr = new float[points.length]; // will this present a problem or will it always be a point in 3D?
+		float[] arr = new float[points.length]; 
 		
 		for (int i = 0; i < points.length; i++) {
 			arr[i] = Float.parseFloat(points[i]);
 		}
-		/*
-		arr[0] = Float.parseFloat(points[0]);
-		arr[1] = Float.parseFloat(points[1]);
-		arr[2] = Float.parseFloat(points[2]);
-*/
 		return arr;
 	}
 

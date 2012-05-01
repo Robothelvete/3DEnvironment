@@ -49,44 +49,40 @@ public class ThickWall implements GameObject {
 	public void draw(GL2 gl) {
 		
 		gl.glBegin(GL2.GL_QUADS);
-			//gl.glColor3dv(color, 0);
+			//set "material" of wall, or rather the light reflection behaviour 
 			float[] rgba = new float[] {(float)color[0],(float)color[1],(float)color[2], 1.0f};
 			gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_AMBIENT_AND_DIFFUSE, rgba, 0);
 	        gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_SPECULAR, rgba, 0);
 	        gl.glMaterialf(GL.GL_FRONT, GLLightingFunc.GL_SHININESS, 0.3f);
 	        
+	        //A normal is fed to opengl BEFORE the actual plane is fed into it
 	        gl.glNormal3d(Math.sin(angle), 0, Math.cos(angle));
-	        //gl.glNormal3d(Math.cos(angle), 0, Math.sin(angle));
-	        //gl.glNormal3d(1, 0, 0);
+	        
 			//draw the two parallell long lines
 			for(int i = 0; i < 8; i++) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
 				if(i == 3) {
-					 //gl.glNormal3d(Math.sin(angle), 0, Math.cos(angle));
-					//gl.glNormal3d(-Math.cos(angle), 0,- Math.sin(angle));
 					gl.glNormal3d(- Math.sin(angle), 0, -Math.cos(angle));
 				}
 			}
 			
 			
-			//0 1 5 4, 2 3 7 6, 1 5 6 2
+			//0 1 5 4, 2 3 7 6, 1 5 6 2 <-- these are the corners visited, in that order, to make these final planes
 			
 			//The two umm... "sides"
-			//gl.glNormal3d(Math.sin(angle), 0, Math.cos(angle));
-			//gl.glNormal3d(0, 0, -1);
 			gl.glNormal3d(-Math.cos(angle), 0, -Math.sin(angle));
 			for (int i = 0; i < 3; i += 2) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
 				gl.glVertex3d(corners[i + 1][0], corners[i + 1][1], corners[i + 1][2]);
 				gl.glVertex3d(corners[i + 5][0], corners[i + 5][1], corners[i + 5][2]);
 				gl.glVertex3d(corners[i + 4][0], corners[i + 4][1], corners[i + 4][2]);
+				
 				gl.glNormal3d(Math.cos(angle), 0, Math.sin(angle));
-				//gl.glNormal3d(- Math.sin(angle), 0, - Math.cos(angle));
-				//gl.glNormal3d(0, 0, 1);
 			}
 			
-			gl.glNormal3d(0, 1, 0);
 			//and lastly, the top. (a wall is placed on the ground, shut up)
+			gl.glNormal3d(0, 1, 0);
+			
 			gl.glVertex3d(corners[1][0], corners[1][1], corners[1][2]);
 			gl.glVertex3d(corners[5][0], corners[5][1], corners[5][2]);
 			gl.glVertex3d(corners[6][0], corners[6][1], corners[6][2]);

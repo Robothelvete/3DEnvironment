@@ -8,9 +8,7 @@ import javax.media.opengl.glu.GLU;
  */
 public class Player {
 	private double[] pos;
-	//angle is determined in opengl as a rotation around a vector in degrees
 	//as it will not be necessary to rotate along the z-axis (which would be akin to walking the walls and ceiling), only these two are needed
-	//we store these bad boys as radians however
 	private double xrot; 
 	private double yrot;
 	private static final double speed = 0.4f;
@@ -26,7 +24,6 @@ public class Player {
 	 * @return Wether it was possible to move so - necessary?
 	 */
 	public boolean move(int direction) {
-		//Why the fuck does OpenGL measure angle in degrees? (javas Math library deals only with radians....)
 		
 		if (direction % 2 == 0) {
 			int forback = 1;
@@ -52,16 +49,11 @@ public class Player {
 	 * @param gl
 	 */
 	public void render(GL2 gl, GLU glu) {
-/*		gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
-		gl.glLoadIdentity();*/
-		
-		
+
 		glu.gluLookAt(pos[0], pos[1], pos[2], //the camera position 
 				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2] + Math.cos(yrot), //give angle relative to position
 				0, 1, 0); //we don't tilt our heads
-		/*
-		gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
-		gl.glLoadIdentity();*/
+		
 	}
 	
 	/**

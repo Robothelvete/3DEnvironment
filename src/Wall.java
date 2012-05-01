@@ -25,9 +25,8 @@ public class Wall implements GameObject {
 	
 	@Override
 	public void draw(GL2 gl) {
-		// TODO Colors, validation?
 		gl.glBegin(GL2.GL_QUADS);
-			//gl.glColor3dv(color, 0);
+			//color, or rather, light reflection
 			float[] rgba = new float[] {(float)color[0],(float)color[1],(float)color[2],1.0f};
 			gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_AMBIENT, rgba, 0);
 	        gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_SPECULAR, rgba, 0);
