@@ -102,19 +102,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glHint(GL2ES1.GL_PERSPECTIVE_CORRECTION_HINT, GL.GL_NICEST);
 		
 		//Let there be light!
-		/*float[] lightPos = {0, 5, 20, 1f};
-		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
-        float[] lightColorSpecular = {0.8f, 0.8f, 0.8f, 1f};
-        
-        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_POSITION, lightPos, 0);
-        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
-        gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_SPECULAR, lightColorSpecular, 0);
-		
-		gl.glEnable(GLLightingFunc.GL_LIGHT0);
-        gl.glEnable(GLLightingFunc.GL_LIGHTING);*/
-//		float[] lightColorAmbient = {0.1f, 0.1f, 0.1f, 1f};
-//		gl.glLightfv(GLLightingFunc.GL_LIGHT0, GLLightingFunc.GL_AMBIENT, lightColorAmbient, 0);
-		
 		for (int i = 0; i < lightsources.length; i++) {
 			lightsources[i].init(gl);
 		}
