@@ -13,22 +13,17 @@ public interface GameObject {
 	public void draw(GL2 gl);
 	
 	/**
-	 * Rotates the object
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param degrees
-	 * @return False if object cannot rotate so
+	 * The smallest and largest values on the X axis for this object. 
 	 */
-	//TODO: I feel like I should change the parameters here to something better....
-	public boolean rotate(double x, double y,double z, double degrees);
+	public double[] deltaX();
 	
 	/**
-	 * Moves the object
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return False if object cannot be moved so
+	 * The smallest and largest values on the Y axis for this object
 	 */
-	public boolean move(double x, double y, double z);
+	public double[] deltaY();
+	
+	/**
+	 * The smallest and largest values on the Z axis for this object
+	 */
+	public double[] deltaZ();
 }

@@ -92,6 +92,42 @@ public class ThickWall implements GameObject {
 	}
 
 	@Override
+	public double[] deltaX() {
+		double[] minmax = new double[2];
+		if(corners[0][0] < corners[4][0]) {
+			minmax[0] = corners[0][0];
+			minmax[1] = corners[7][0];
+		}
+		else {
+			minmax[0] = corners[4][0];
+			minmax[1] = corners[3][0];
+		}
+		return minmax;
+	}
+
+	@Override
+	public double[] deltaY() {
+		double[] minmax = new double[2];
+		minmax[0] = corners[0][1];//TODO: change this as well when walls can slope
+		minmax[1] = corners[1][1];
+		return minmax;
+	}
+
+	@Override
+	public double[] deltaZ() {
+		double[] minmax = new double[2];
+		if(corners[0][2] < corners[4][2]) {
+			minmax[0] = corners[0][2];
+			minmax[1] = corners[7][2];
+		}
+		else {
+			minmax[0] = corners[4][2];
+			minmax[1] = corners[3][2];
+		}
+		return minmax;	
+	}
+
+	/*@Override
 	public boolean rotate(double x, double y, double z, double degrees) {
 		return false;
 	}
@@ -99,6 +135,6 @@ public class ThickWall implements GameObject {
 	@Override
 	public boolean move(double x, double y, double z) {
 		return false;
-	}
+	}*/
 
 }
