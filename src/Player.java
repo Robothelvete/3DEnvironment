@@ -13,10 +13,11 @@ public class Player {
 	// akin to walking the walls and ceiling), only these two are needed
 	private double xrot;
 	private double yrot;
-	private static final double speed = 0.4f;
-	private static final double mouseSense = 0.001f * Math.PI;
+	private static final double speed = 10.0;
+	private static final double mouseSense = 0.001 * Math.PI;
 	private boolean[] moving;
-
+	
+	
 	public Player() {
 		pos = new double[] { 0.0, 2.0, -10.0 };// TODO
 		moving = new boolean[] {false, false, false, false};
@@ -29,8 +30,10 @@ public class Player {
 	 *            - int 0->3, 0 for forward, 1 for right and so on clockwise.
 	 * @return Wether it was possible to move so - necessary?
 	 */
-	public void move() {
-
+	public void move(long timelasted) {
+		//walkingspeed is in other words how long he should have moved this frame
+		double walkingspeed = speed * timelasted/1000000000;
+		
 		for (int i = 0; i < 4; i++) {
 			if (moving[i] == true) {
 				int direction = i;
@@ -39,15 +42,15 @@ public class Player {
 					if (direction > 0)
 						forback = -1;
 
-					pos[0] += Math.sin(yrot) * speed * forback;
-					pos[2] += Math.cos(yrot) * speed * forback;
+					pos[0] += Math.sin(yrot) * walkingspeed * forback;//movement sideways
+					pos[2] += Math.cos(yrot) * walkingspeed * forback;//movement backandforth
 				} else {
 					int leftright = -1;
 					if (direction > 1)
 						leftright = 1;
 
-					pos[0] += Math.cos(yrot) * speed * leftright;
-					pos[2] -= Math.sin(yrot) * speed * leftright; // negative because I've switched the axles
+					pos[0] += Math.cos(yrot) * walkingspeed * leftright;
+					pos[2] -= Math.sin(yrot) * walkingspeed * leftright; // negative because I've switched the axles
 				}
 			}
 		}

@@ -49,6 +49,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	private static int centerX;
 	private static int centerY;
 	private Robot robot;
+	private long lastNanoTime;
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
@@ -100,7 +101,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		//never seems to fire	
+		//never seems to fire, don't know why	
 	}
 
 	@Override
@@ -144,7 +145,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		
-		player.move();
+		if (lastNanoTime == 0) {
+			lastNanoTime = System.nanoTime(); //initialize
+		}
+		long timeLasted = System.nanoTime() - lastNanoTime;
+		//reset time until next uh.... time
+		lastNanoTime = System.nanoTime();
+		
+		player.move(timeLasted); //update position and render camera
 		player.render(gl, glu);
 		
 		//place out the lights
@@ -156,7 +164,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
-
+		
+		
 	}
 
 	@Override
