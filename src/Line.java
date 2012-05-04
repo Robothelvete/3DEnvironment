@@ -38,6 +38,12 @@ public class Line implements GameObject {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 	/*@Override
 	public boolean rotate(double x, double y, double z, double degrees) {

@@ -64,5 +64,12 @@ public class Wall implements GameObject {
 		minmax[1] = corners[3][2];
 		return minmax;
 	}
+
+	@Override
+	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	
 }

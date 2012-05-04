@@ -30,6 +30,8 @@ public class Player {
 		//walkingspeed is in other words how long he should have moved this frame
 		double walkingspeed = speed * timelasted/1000000000;
 		
+		double[] newpos = new double[]{pos[0], pos[1], pos[2]};
+		
 		for (int i = 0; i < 4; i++) {
 			if (moving[i] == true) {
 				int direction = i;
@@ -38,18 +40,45 @@ public class Player {
 					if (direction > 0)
 						forback = -1;
 
-					pos[0] += Math.sin(yrot) * walkingspeed * forback;//movement on X axis
-					pos[2] += Math.cos(yrot) * walkingspeed * forback;//movement on Z axis
+					newpos[0] += Math.sin(yrot) * walkingspeed * forback;//movement on X axis
+					newpos[2] += Math.cos(yrot) * walkingspeed * forback;//movement on Z axis
 				} else {
 					int leftright = -1;
 					if (direction > 1)
 						leftright = 1;
 
-					pos[0] += Math.cos(yrot) * walkingspeed * leftright;
-					pos[2] -= Math.sin(yrot) * walkingspeed * leftright; // negative because I've switched the axles
+					newpos[0] += Math.cos(yrot) * walkingspeed * leftright;
+					newpos[2] -= Math.sin(yrot) * walkingspeed * leftright; // negative because I've switched the axles
 				}
 			}
 		}
+		
+		//now that we have calculated the new position we try to move into, it's time for collision detection
+		//this is slightly different from collision detection for objects, because we don't want our player to bounce off walls now, do we?
+		//let's start by checking if we're even near any object (in any objects bounding box)
+		
+		for (int i = 0; i < otherObjects.length; i++) {
+			GameObject curobj = otherObjects[i];
+			//Check if we're in the vicinity on the X axis
+			double[] deltaX = curobj.deltaX();
+			if (newpos[0] >= deltaX[0] && newpos[0] <= deltaX[1]) {
+				//Then the Z axis
+				double[] deltaZ = curobj.deltaZ();
+				if (newpos[2] >= deltaZ[0] && newpos[2] <= deltaZ[1]) {
+					//And finally the Y axis, because this is the axis most likely to give a positive
+					double[] deltaY = curobj.deltaY();
+					if (newpos[1] >= deltaY[0] && newpos[1] <= deltaY[1]) {
+						//Ok, so we're in this objects interaction box, time to do a more precise detection
+						
+						
+						
+					}
+				}
+			}
+		}
+		
+		pos = newpos;
+		
 	}
 
 	/**

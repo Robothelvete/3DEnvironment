@@ -16,6 +16,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
@@ -70,7 +71,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			player.startMoving(3);
 			break;
 		}
-		
 	}
 
 	public GameEngine() {

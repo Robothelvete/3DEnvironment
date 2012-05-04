@@ -27,7 +27,7 @@ public class ThickWall implements GameObject {
 		double angle;
 		//Stand back, I'm gonna try trigonometry
 		if (deltaX == 0) {
-			angle = Math.PI/2;
+			angle = Math.PI/2;//avoid divbyzero error
 		}
 		else {
 			angle = Math.atan(deltaZ/deltaX);
@@ -37,7 +37,7 @@ public class ThickWall implements GameObject {
 		double offsetZ = Math.cos(angle) * thickness;
 		for (int i = 4; i < 8; i++) {
 			corners[i][0] = corners[i-4][0] - offsetX;
-			corners[i][2] = corners[i-4][2] + offsetZ;
+			corners[i][2] = corners[i-4][2] - offsetZ;
 			corners[i][1] = corners[i-4][1]; //TODO: later, open up for sloping walls/hills
 		}
 		
@@ -94,14 +94,23 @@ public class ThickWall implements GameObject {
 	@Override
 	public double[] deltaX() {
 		double[] minmax = new double[2];
-		if(corners[0][0] < corners[4][0]) {
+		
+		if(corners[0][0] < corners[7][0]) {
+			minmax[0] = corners[0][0];
+			minmax[1] = corners[7][0];
+		}
+		else {
+			minmax[0] = corners[7][0];
+			minmax[1] = corners[0][0];
+		}
+		/*if(corners[0][0] < corners[4][0]) {
 			minmax[0] = corners[0][0];
 			minmax[1] = corners[7][0];
 		}
 		else {
 			minmax[0] = corners[4][0];
 			minmax[1] = corners[3][0];
-		}
+		}*/
 		return minmax;
 	}
 
@@ -116,16 +125,34 @@ public class ThickWall implements GameObject {
 	@Override
 	public double[] deltaZ() {
 		double[] minmax = new double[2];
-		if(corners[0][2] < corners[4][2]) {
+		/*if(corners[0][2] < corners[4][2]) {
 			minmax[0] = corners[0][2];
 			minmax[1] = corners[7][2];
 		}
 		else {
 			minmax[0] = corners[4][2];
 			minmax[1] = corners[3][2];
+		}*/
+		if(corners[0][2] < corners[7][2]) {
+			minmax[0] = corners[0][2];
+			minmax[1] = corners[7][2];
+		}
+		else {
+			minmax[0] = corners[7][2];
+			minmax[1] = corners[0][2];
 		}
 		return minmax;	
 	}
+
+	@Override
+	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
+		//compare angles!
+		
+
+		return null;
+	}
+
+
 
 	/*@Override
 	public boolean rotate(double x, double y, double z, double degrees) {

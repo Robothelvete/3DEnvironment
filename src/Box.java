@@ -27,5 +27,13 @@ public class Box implements GameObject {
 		return null;
 	}
 
+	@Override
+	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
 	
 }
