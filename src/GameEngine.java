@@ -45,29 +45,32 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	private GameObject[] gameObjects;
 	private Lightsource[] lightsources;
 	private Player player;
+	//for centering mouse
 	private static int centerX;
 	private static int centerY;
 	private Robot robot;
+	private long lastNanoTime;
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case (KeyEvent.VK_ESCAPE):
 			exit();
-			break;
+			break;	
 		case (KeyEvent.VK_W):
-			player.move(0);
+			player.startMoving(0);
 			break;
 		case (KeyEvent.VK_D):
-			player.move(1);
+			player.startMoving(1);
 			break;
 		case (KeyEvent.VK_S):
-			player.move(2);
+			player.startMoving(2);
 			break;
 		case (KeyEvent.VK_A):
-			player.move(3);
+			player.startMoving(3);
 			break;
 		}
+		
 	}
 
 	public GameEngine() {
@@ -79,15 +82,26 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void keyReleased(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case (KeyEvent.VK_W):
+			player.stopMoving(0);
+			break;
+		case (KeyEvent.VK_D):
+			player.stopMoving(1);
+			break;
+		case (KeyEvent.VK_S):
+			player.stopMoving(2);
+			break;
+		case (KeyEvent.VK_A):
+			player.stopMoving(3);
+			break;
+		}
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-
+	public void keyTyped(KeyEvent e) {
+		//never seems to fire, don't know why	
 	}
 
 	@Override
@@ -105,7 +119,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < lightsources.length; i++) {
 			lightsources[i].init(gl);
 		}
-		
 		gl.glEnable(GLLightingFunc.GL_LIGHTING);
 		
 		// add keyboard input listener
@@ -132,6 +145,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 		gl.glLoadIdentity();
 		
+		if (lastNanoTime == 0) {
+			lastNanoTime = System.nanoTime(); //initialize
+		}
+		long timeLasted = System.nanoTime() - lastNanoTime;
+		//reset time until next uh.... time
+		lastNanoTime = System.nanoTime();
+		
+		player.move(timeLasted); //update position and render camera
 		player.render(gl, glu);
 		
 		//place out the lights
@@ -143,7 +164,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
-
+		
+		
 	}
 
 	@Override
