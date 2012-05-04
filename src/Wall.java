@@ -33,23 +33,36 @@ public class Wall implements GameObject {
 	        gl.glMaterialfv(GL.GL_FRONT, GLLightingFunc.GL_DIFFUSE, rgba, 0);
 	        gl.glMaterialf(GL.GL_FRONT, GLLightingFunc.GL_SHININESS, 0.5f);
         
-	        gl.glNormal3d(0, 1, 0);
+	        gl.glNormal3d(0, 1, 0);//TODO: change here so that it's not only a floor
 			for(int i = 0; i < 4; i++) {
 				gl.glVertex3d(corners[i][0], corners[i][1], corners[i][2]);
 			}
-			
 			
 		gl.glEnd();
 	}
 
 	@Override
-	public boolean rotate(double x, double y, double z, double degrees) {
-		return false; //At least until I for some reason decide you can move walls....
+	public double[] deltaX() {
+		double[] minmax = new double[2];
+		minmax[0] = corners[0][0];
+		minmax[1] = corners[3][0];
+		return minmax;
 	}
 
 	@Override
-	public boolean move(double x, double y, double z) {
-		return false; //At least until I for some reason decide you can move walls....
+	public double[] deltaY() {
+		double[] minmax = new double[2];
+		minmax[0] = corners[0][1];
+		minmax[1] = corners[3][1];
+		return minmax;
 	}
 
+	@Override
+	public double[] deltaZ() {
+		double[] minmax = new double[2];
+		minmax[0] = corners[0][2];
+		minmax[1] = corners[3][2];
+		return minmax;
+	}
+	
 }

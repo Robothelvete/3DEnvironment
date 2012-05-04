@@ -23,17 +23,32 @@ public class Line implements GameObject {
 			gl.glVertex3d(points[1][0], points[1][1], points[1][2]);
 		gl.glEnd();
 	}
-
 	@Override
+	public double[] deltaX() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public double[] deltaY() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public double[] deltaZ() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*@Override
 	public boolean rotate(double x, double y, double z, double degrees) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public boolean move(double x, double y, double z) {
 		// TODO Auto-generated method stub
 		return false;
-	}
+	}*/
 
 }

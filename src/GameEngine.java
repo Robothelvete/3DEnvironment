@@ -149,10 +149,9 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			lastNanoTime = System.nanoTime(); //initialize
 		}
 		long timeLasted = System.nanoTime() - lastNanoTime;
-		//reset time until next uh.... time
-		lastNanoTime = System.nanoTime();
+		lastNanoTime = System.nanoTime();//reset time until next uh.... time
 		
-		player.move(timeLasted); //update position and render camera
+		player.move(timeLasted, gameObjects); //update position and render camera
 		player.render(gl, glu);
 		
 		//place out the lights
@@ -164,7 +163,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
 		}
-		
 		
 	}
 

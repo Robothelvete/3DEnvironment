@@ -24,13 +24,9 @@ public class Player {
 	}
 
 	/**
-	 * Moves the player/camera in the given direction.
-	 * 
-	 * @param direction
-	 *            - int 0->3, 0 for forward, 1 for right and so on clockwise.
-	 * @return Wether it was possible to move so - necessary?
+	 * Moves the player/camera in the given direction. 
 	 */
-	public void move(long timelasted) {
+	public void move(long timelasted, GameObject[] otherObjects) { //TODO: make this more pretty
 		//walkingspeed is in other words how long he should have moved this frame
 		double walkingspeed = speed * timelasted/1000000000;
 		
@@ -42,8 +38,8 @@ public class Player {
 					if (direction > 0)
 						forback = -1;
 
-					pos[0] += Math.sin(yrot) * walkingspeed * forback;//movement sideways
-					pos[2] += Math.cos(yrot) * walkingspeed * forback;//movement backandforth
+					pos[0] += Math.sin(yrot) * walkingspeed * forback;//movement on X axis
+					pos[2] += Math.cos(yrot) * walkingspeed * forback;//movement on Z axis
 				} else {
 					int leftright = -1;
 					if (direction > 1)
@@ -81,10 +77,8 @@ public class Player {
 	 */
 	public void render(GL2 gl, GLU glu) {
 
-		glu.gluLookAt(pos[0], pos[1],
-				pos[2], // the camera position
-				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot),
-				pos[2] + Math.cos(yrot), // give angle relative to position
+		glu.gluLookAt(pos[0], pos[1], pos[2], // the camera position
+				pos[0] + Math.sin(yrot), pos[1] + Math.sin(xrot), pos[2] + Math.cos(yrot), // give angle relative to position
 				0, 1, 0); // we don't tilt our heads
 
 	}
