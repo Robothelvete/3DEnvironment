@@ -69,8 +69,11 @@ public class Player {
 					double[] deltaY = curobj.deltaY();
 					if (newpos[1] >= deltaY[0] && newpos[1] <= deltaY[1]) {
 						//Ok, so we're in this objects interaction box, time to do a more precise detection
-						
-						
+						double[] collNormal = curobj.collisionNormal(pos, newpos);
+						if (collNormal != null) {
+							newpos = pos; //TODO: make sliding along walls possible
+							//newpos = new double[] {newpos[0] + collNormal[0], newpos[1] + collNormal[1],newpos[2] + collNormal[2]}; 
+						}
 						
 					}
 				}

@@ -23,15 +23,15 @@ public class ThickWall implements GameObject {
 		
 		//calculate the other ones from the thickness of the wall
 		double deltaX = corners[0][0] - corners[3][0];
-		double deltaZ = corners[0][2] - corners[3][2];
-		double angle;
+		double deltaZ = corners[3][2] - corners[0][2];
+		double angle = Math.atan2(deltaZ, deltaX);
 		//Stand back, I'm gonna try trigonometry
-		if (deltaX == 0) {
+		/*if (deltaX == 0) {
 			angle = Math.PI/2;//avoid divbyzero error
 		}
 		else {
 			angle = Math.atan(deltaZ/deltaX);
-		}
+		}*/
 		
 		double offsetX = Math.sin(angle) * thickness;
 		double offsetZ = Math.cos(angle) * thickness;
@@ -103,14 +103,7 @@ public class ThickWall implements GameObject {
 			minmax[0] = corners[7][0];
 			minmax[1] = corners[0][0];
 		}
-		/*if(corners[0][0] < corners[4][0]) {
-			minmax[0] = corners[0][0];
-			minmax[1] = corners[7][0];
-		}
-		else {
-			minmax[0] = corners[4][0];
-			minmax[1] = corners[3][0];
-		}*/
+
 		return minmax;
 	}
 
@@ -125,14 +118,7 @@ public class ThickWall implements GameObject {
 	@Override
 	public double[] deltaZ() {
 		double[] minmax = new double[2];
-		/*if(corners[0][2] < corners[4][2]) {
-			minmax[0] = corners[0][2];
-			minmax[1] = corners[7][2];
-		}
-		else {
-			minmax[0] = corners[4][2];
-			minmax[1] = corners[3][2];
-		}*/
+
 		if(corners[0][2] < corners[7][2]) {
 			minmax[0] = corners[0][2];
 			minmax[1] = corners[7][2];
@@ -147,9 +133,38 @@ public class ThickWall implements GameObject {
 	@Override
 	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
 		//compare angles!
-		
+		//if angle to endpoint from corner4 is larger than from corner4 to corner7
+		//and if angle to endpoint from corner0 is smaller than from corner0 to corner3, then endpoint is inside the wall
+		//after that, check the angle from corner0 (or corner4, doesn't matter) to startpoint. If it's smaller than from that corner to endpoint, the plane starting from corner4 is the colliding plane
+		//if it's larger, it's the other one
 
-		return null;
+		double distX4 = corners[4][0] - endpoint[0];
+		double distZ4 = endpoint[2] - corners[4][2];
+		
+		if (Math.atan2(distZ4, distX4) < angle) {
+			return null;
+		}
+		
+		double distX0 = corners[0][0] - endpoint[0];
+		double distZ0 = endpoint[2] - corners[0][2];
+		
+		if (Math.atan2(distZ0, distX0) > angle) {
+			return null;
+		}
+		
+		//ok, if we got this far, we know that endpoint is inside this wall
+		//but from what side are we approaching?
+		if (Math.atan2(distZ4, distX4) > Math.atan2(startpoint[2] - corners[4][2], corners[4][0] - startpoint[0])) {
+			//if endpoint angle is larger than startpoint angle, we're approaching the 'right side' wall, the one starting at corners[4]
+			return new double[] {-Math.sin(angle), 0, -Math.cos(angle)};
+		}
+		else {
+			//we're approaching it from the other wall, the one starting at corners[0]
+			return new double[] {Math.sin(angle), 0, Math.cos(angle)};
+		}
+		
+		
+		
 	}
 
 
