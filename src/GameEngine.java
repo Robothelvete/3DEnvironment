@@ -96,6 +96,9 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		case (KeyEvent.VK_A):
 			player.stopMoving(3);
 			break;
+		case (KeyEvent.VK_C):
+			player.printpos();
+			break;
 		}
 	}
 

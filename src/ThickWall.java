@@ -131,6 +131,8 @@ public class ThickWall implements GameObject {
 		//and if angle to endpoint from corner0 is smaller than from corner0 to corner3, then endpoint is inside the wall
 		//after that, check the angle from corner0 (or corner4, doesn't matter) to startpoint. If it's smaller than from that corner to endpoint, the plane starting from corner4 is the colliding plane
 		//if it's larger, it's the other one
+		
+		//TODO: check the other sides of this wall as well
 
 		double distX4 = corners[4][0] - endpoint[0];
 		double distZ4 = endpoint[2] - corners[4][2];
@@ -159,6 +161,28 @@ public class ThickWall implements GameObject {
 		
 		
 		
+	}
+
+	@Override
+	public double[] collisionNormal(double[] startpoint, double[] endpoint, double buffersize) {
+		//TODO: make this waaaaay more efficient, perhaps caching the buffered corners?
+		
+		//Make this wall buffersize units bigger
+		corners[4][0] -= buffersize;
+		corners[4][2] -= buffersize;
+		corners[0][0] += buffersize;
+		corners[0][2] += buffersize;
+		
+		//detect the collision
+		double[] normal = collisionNormal(startpoint, endpoint);
+		
+		//reset it back to the way it was
+		corners[4][0] += buffersize;
+		corners[4][2] += buffersize;
+		corners[0][0] -= buffersize;
+		corners[0][2] -= buffersize;
+		
+		return normal;
 	}
 
 }

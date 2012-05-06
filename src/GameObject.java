@@ -34,4 +34,6 @@ public interface GameObject {
 	 * @return A normal (vector in 3D) to the surface which the point just collided into, or if no collision was detected: null
 	 */
 	public double[] collisionNormal(double[] startpoint, double[] endpoint);
+	
+	public double[] collisionNormal(double[] startpoint, double[] endpoint, double buffersize);
 }
