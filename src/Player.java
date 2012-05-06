@@ -16,6 +16,7 @@ public class Player {
 	private static final double speed = 10.0;
 	private static final double mouseSense = 0.001 * Math.PI;
 	private boolean[] moving;
+	private static final double buffer = 1.0;
 	
 	
 	public Player() {
@@ -57,6 +58,8 @@ public class Player {
 		//this is slightly different from collision detection for objects, because we don't want our player to bounce off walls now, do we?
 		//let's start by checking if we're even near any object (in any objects bounding box)
 		
+		//double[] bufferingpos = new double[] {newpos[0] + (newpos[0] - pos[0]) * buffer, newpos[1] + (newpos[1] - pos[1]) * buffer, newpos[2] + (newpos[2] - pos[2]) * buffer };
+		
 		for (int i = 0; i < otherObjects.length; i++) {
 			GameObject curobj = otherObjects[i];
 			//Check if we're in the vicinity on the X axis
@@ -71,8 +74,10 @@ public class Player {
 						//Ok, so we're in this objects interaction box, time to do a more precise detection
 						double[] collNormal = curobj.collisionNormal(pos, newpos);
 						if (collNormal != null) {
-							newpos = pos; //TODO: make sliding along walls possible
-							//newpos = new double[] {newpos[0] + collNormal[0], newpos[1] + collNormal[1],newpos[2] + collNormal[2]}; 
+							//slide along the wall by nullifing the movement by the normal
+							newpos[0] = newpos[0] + Math.abs(newpos[0] - pos[0]) * collNormal[0];
+							newpos[1] = newpos[1] + Math.abs(newpos[1] - pos[1]) * collNormal[1];
+							newpos[2] = newpos[2] + Math.abs(newpos[2] - pos[2]) * collNormal[2];
 						}
 						
 					}

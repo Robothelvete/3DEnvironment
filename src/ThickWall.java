@@ -26,12 +26,6 @@ public class ThickWall implements GameObject {
 		double deltaZ = corners[3][2] - corners[0][2];
 		double angle = Math.atan2(deltaZ, deltaX);
 		//Stand back, I'm gonna try trigonometry
-		/*if (deltaX == 0) {
-			angle = Math.PI/2;//avoid divbyzero error
-		}
-		else {
-			angle = Math.atan(deltaZ/deltaX);
-		}*/
 		
 		double offsetX = Math.sin(angle) * thickness;
 		double offsetZ = Math.cos(angle) * thickness;
@@ -166,17 +160,5 @@ public class ThickWall implements GameObject {
 		
 		
 	}
-
-
-
-	/*@Override
-	public boolean rotate(double x, double y, double z, double degrees) {
-		return false;
-	}
-
-	@Override
-	public boolean move(double x, double y, double z) {
-		return false;
-	}*/
 
 }
