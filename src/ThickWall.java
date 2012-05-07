@@ -132,7 +132,7 @@ public class ThickWall implements GameObject {
 		//after that, check the angle from corner0 (or corner4, doesn't matter) to startpoint. If it's smaller than from that corner to endpoint, the plane starting from corner4 is the colliding plane
 		//if it's larger, it's the other one
 		
-		//TODO: check the other sides of this wall as well
+		//TODO: check the other sides of this wall as well. Also, can't this create a bug since the angle would probably be different, or am I simply paranoid? Investigate!
 
 		double distX4 = corners[4][0] - endpoint[0];
 		double distZ4 = endpoint[2] - corners[4][2];

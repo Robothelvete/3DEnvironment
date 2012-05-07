@@ -263,6 +263,10 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 						gameObjects[counter] = new ThickWall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]), Double.parseDouble(allinfo[4]), parseDoubleArrays(allinfo[5]));
 						break;
+					case "box":
+						gameObjects[counter] = new Box(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+								parseDoubleArrays(allinfo[3]));
+						break;
 					}
 					counter++;
 				}
