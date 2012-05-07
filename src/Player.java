@@ -16,7 +16,7 @@ public class Player {
 	private static final double speed = 10.0;
 	private static final double mouseSense = 0.001 * Math.PI;
 	private boolean[] moving;
-	private static final double buffer = 1.5;
+	private static final double buffer = 1.3;
 	
 	public Player() {
 		pos = new double[] { 0.0, 2.0, -10.0 };// TODO

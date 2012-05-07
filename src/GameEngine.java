@@ -45,6 +45,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	static Animator animator = new Animator(canvas);
 	private GameObject[] gameObjects;
 	private Lightsource[] lightsources;
+	private MoveableObject[] moveableObjects;
 	private Player player;
 	//for centering mouse
 	private static int centerX;
@@ -162,6 +163,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			lightsources[i].draw(gl);
 		}
 		
+		//move all objects
+		for (int i = 0; i < moveableObjects.length; i++) {
+			moveableObjects[i].move(timeLasted, gameObjects);
+			moveableObjects[i].rotate(timeLasted, gameObjects);
+		}
+		
 		// Render all objects
 		for (int i = 0; i < gameObjects.length; i++) {
 			gameObjects[i].draw(gl);
@@ -240,12 +247,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		}
 
 		try {
-			// TODO: actually do what this function is meant to do
-			// First line says how many objects there are
+			// First line says how many objects there are in total
 			gameObjects = new GameObject[Integer.parseInt(br.readLine())];
-
+			//the second tells us how many of them are movable
+			moveableObjects = new MoveableObject[Integer.parseInt(br.readLine())];
+			
 			String line = br.readLine();
 			int counter = 0;
+			int movecounter = 0;
 			while (line != null) {
 				if (!line.startsWith("#")) { //ignore comments
 					String[] allinfo = line.split(" ");
@@ -264,8 +273,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 								parseDoubleArrays(allinfo[3]), Double.parseDouble(allinfo[4]), parseDoubleArrays(allinfo[5]));
 						break;
 					case "box":
-						gameObjects[counter] = new Box(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+						Box tmp = new Box(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]));
+						gameObjects[counter] = tmp;
+						moveableObjects[movecounter] = tmp;
+						tmp.startRotating(new double[]{0, 1, 0});
+						movecounter++;
 						break;
 					}
 					counter++;
