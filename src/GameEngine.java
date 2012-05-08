@@ -16,6 +16,7 @@ import javax.media.opengl.GL2;
 import javax.media.opengl.GL2ES1;
 import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.GLEventListener;
+import javax.media.opengl.GLException;
 import javax.media.opengl.awt.GLCanvas;
 import javax.media.opengl.fixedfunc.GLLightingFunc;
 import javax.media.opengl.fixedfunc.GLMatrixFunc;
@@ -44,6 +45,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	static Animator animator = new Animator(canvas);
 	private GameObject[] gameObjects;
 	private Lightsource[] lightsources;
+	private MoveableObject[] moveableObjects;
 	private Player player;
 	//for centering mouse
 	private static int centerX;
@@ -70,7 +72,6 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			player.startMoving(3);
 			break;
 		}
-		
 	}
 
 	public GameEngine() {
@@ -95,6 +96,9 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 			break;
 		case (KeyEvent.VK_A):
 			player.stopMoving(3);
+			break;
+		case (KeyEvent.VK_C):
+			player.printpos();
 			break;
 		}
 	}
@@ -157,6 +161,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		//place out the lights
 		for (int i = 0; i < lightsources.length; i++) {
 			lightsources[i].draw(gl);
+		}
+		
+		//move all objects
+		for (int i = 0; i < moveableObjects.length; i++) {
+			moveableObjects[i].move(timeLasted, gameObjects);
+			moveableObjects[i].rotate(timeLasted, gameObjects);
 		}
 		
 		// Render all objects
@@ -237,12 +247,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		}
 
 		try {
-			// TODO: actually do what this function is meant to do
-			// First line says how many objects there are
+			// First line says how many objects there are in total
 			gameObjects = new GameObject[Integer.parseInt(br.readLine())];
-
+			//the second tells us how many of them are movable
+			moveableObjects = new MoveableObject[Integer.parseInt(br.readLine())];
+			
 			String line = br.readLine();
 			int counter = 0;
+			int movecounter = 0;
 			while (line != null) {
 				if (!line.startsWith("#")) { //ignore comments
 					String[] allinfo = line.split(" ");
@@ -259,6 +271,14 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 					case "thickwall":
 						gameObjects[counter] = new ThickWall(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
 								parseDoubleArrays(allinfo[3]), Double.parseDouble(allinfo[4]), parseDoubleArrays(allinfo[5]));
+						break;
+					case "box":
+						Box tmp = new Box(parseDoubleArrays(allinfo[1]), parseDoubleArrays(allinfo[2]),
+								parseDoubleArrays(allinfo[3]));
+						gameObjects[counter] = tmp;
+						moveableObjects[movecounter] = tmp;
+						tmp.startRotating(new double[]{0, 1, 0});
+						movecounter++;
 						break;
 					}
 					counter++;
