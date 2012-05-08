@@ -30,7 +30,7 @@ public class Box implements GameObject, MoveableObject {
 	public Box(double[] halfmeasurements, double[] startpos, double[] color) {
 		corners = new double[8][3];
 		//first the bottom square, drawn 
-		corners[0] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
+		/*corners[0] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[1] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[2] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] + halfmeasurements[2]};
 		corners[3] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] + halfmeasurements[2]};
@@ -40,7 +40,7 @@ public class Box implements GameObject, MoveableObject {
 		corners[5] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[6] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] + halfmeasurements[2]};
 		corners[7] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] + halfmeasurements[2]};
-		
+		*/
 		centerpoint = startpos;
 		
 		this.color = color; //why did I decide on american spelling? annoys the shit out of me...
@@ -63,6 +63,8 @@ public class Box implements GameObject, MoveableObject {
 		normals = new double[6][3];
 		updateNormals();
 		
+		rotVector = new double[3];
+		moveVector = new double[3];
 	}
 	
 	@Override
@@ -121,12 +123,12 @@ public class Box implements GameObject, MoveableObject {
 	 * recalculates every planes (sides) normal based on the current rotation status of the Box
 	 */
 	private void updateNormals() {
-		normals[0] = new double[]{-Math.sin(zrot),Math.sin(xrot) -Math.cos(zrot) , -Math.sin(xrot)};
-		normals[1] = new double[]{Math.sin(zrot), Math.cos(zrot) - Math.sin(xrot), Math.sin(xrot)};
-		normals[2] = new double[]{Math.sin(yrot), -Math.sin(xrot), Math.sin(xrot) - Math.cos(yrot)};
-		normals[3] = new double[]{-Math.sin(yrot), Math.sin(xrot), Math.cos(yrot) - Math.sin(xrot)};
-		normals[4] = new double[]{Math.sin(zrot) - Math.cos(yrot), Math.sin(zrot), -Math.sin(yrot)};
-		normals[5] = new double[]{Math.cos(yrot) - Math.sin(zrot), -Math.sin(zrot), Math.sin(yrot)};
+		normals[0] = new double[]{-Math.sin(zrot),					Math.sin(xrot) -Math.cos(zrot) ,  	-Math.sin(xrot)};
+		normals[1] = new double[]{Math.sin(zrot),  					Math.cos(zrot) - Math.sin(xrot),  	Math.sin(xrot)};
+		normals[2] = new double[]{Math.sin(yrot), 					-Math.sin(xrot),  					Math.sin(xrot) - Math.cos(yrot)};
+		normals[3] = new double[]{-Math.sin(yrot), 					Math.sin(xrot),  					Math.cos(yrot) - Math.sin(xrot)};
+		normals[4] = new double[]{Math.sin(zrot) - Math.cos(yrot), 	Math.sin(zrot),  					-Math.sin(yrot)};
+		normals[5] = new double[]{Math.cos(yrot) - Math.sin(zrot), 	-Math.sin(zrot),  					Math.sin(yrot)};
 	}
 
 	
@@ -178,12 +180,9 @@ public class Box implements GameObject, MoveableObject {
 		corners[3] = addNormals(normals[4], normals[0], normals[3]);
 		corners[4] = addNormals(normals[4], normals[1], normals[2]);
 		corners[5] = addNormals(normals[5], normals[1], normals[2]);
-		corners[5] = addNormals(normals[5], normals[1], normals[3]);
-		corners[6] = addNormals(normals[4], normals[1], normals[3]);
+		corners[6] = addNormals(normals[5], normals[1], normals[3]);
+		corners[7] = addNormals(normals[4], normals[1], normals[3]);
 		//Note how the pattern of the normals correspond to the pattern of + and - of the corners being placed out in the constructors
-		
-		/*corners[0][0] = centerpoint[0] - (Math.cos(yrot) * radii[1]) - (Math.sin(zrot) * radii[2]) + (Math.sin(xrot) * radii[0]);
-		corners[4][0] = centerpoint[4] - (Math.cos(yrot) * radii[1]) + (Math.sin(zrot) * radii[2]) - (Math.sin(xrot) * radii[0]);*/
 		
 	}
 
@@ -203,12 +202,14 @@ public class Box implements GameObject, MoveableObject {
 	 * @return The new position calculated from this
 	 */
 	private double[] addNormals(double[] x, double[] y, double[] z) {
-		double[] cornerposition = new double[3];
+		double[] cornerposition = new double[]{centerpoint[0], centerpoint[1], centerpoint[2]};
+		//cornerposition = centerpoint;
 		for (int i = 0; i < 3; i++) {
 			cornerposition[i] += x[i] * dimensions[0];
 			cornerposition[i] += y[i] * dimensions[1];
 			cornerposition[i] += z[i] * dimensions[2];
 		}
+		
 		return cornerposition;
 	}
 

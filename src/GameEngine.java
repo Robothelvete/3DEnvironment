@@ -277,7 +277,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 								parseDoubleArrays(allinfo[3]));
 						gameObjects[counter] = tmp;
 						moveableObjects[movecounter] = tmp;
-						tmp.startRotating(new double[]{0, 1, 0});
+						tmp.startRotating(new double[]{1, 0, 0});
 						movecounter++;
 						break;
 					}
