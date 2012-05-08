@@ -127,6 +127,7 @@ public class ThickWall implements GameObject {
 		return minmax;	
 	}
 
+
 	/*@Override
 	public boolean rotate(double x, double y, double z, double degrees) {
 		return false;

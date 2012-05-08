@@ -31,7 +31,7 @@ public class Player {
 		double walkingspeed = speed * timelasted/1000000000;
 		
 		for (int i = 0; i < 4; i++) {
-			if (moving[i] == true) {
+			if (moving[i]) {
 				int direction = i;
 				if (direction % 2 == 0) {
 					int forback = 1;
