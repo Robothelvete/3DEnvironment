@@ -11,15 +11,11 @@ public class Box implements GameObject, MoveableObject {
 	private double[][] corners;
 	private double[] color;
 	private double[] centerpoint;
-	private double xrot;
-	private double yrot;
-	private double zrot;
 	private double maxlength;
 	private double[] rotVector;
 	private double[] moveVector;
 	//private double[] radii;
 	private double[][] normals;
-	private double[] dimensions;
 	
 	/**
 	 * Construct a box at a certain place with a certain color
@@ -30,7 +26,7 @@ public class Box implements GameObject, MoveableObject {
 	public Box(double[] halfmeasurements, double[] startpos, double[] color) {
 		corners = new double[8][3];
 		//first the bottom square, drawn 
-		/*corners[0] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
+		corners[0] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[1] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[2] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] + halfmeasurements[2]};
 		corners[3] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] - halfmeasurements[1], startpos[2] + halfmeasurements[2]};
@@ -40,14 +36,10 @@ public class Box implements GameObject, MoveableObject {
 		corners[5] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] - halfmeasurements[2]};
 		corners[6] = new double[]{startpos[0] + halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] + halfmeasurements[2]};
 		corners[7] = new double[]{startpos[0] - halfmeasurements[0], startpos[1] + halfmeasurements[1], startpos[2] + halfmeasurements[2]};
-		*/
+		
 		centerpoint = startpos;
 		
 		this.color = color; //why did I decide on american spelling? annoys the shit out of me...
-		
-		xrot = 0.0;
-		yrot = 0.0;
-		zrot = 0.0;
 		
 		maxlength = 0;
 		for(int i= 0; i < halfmeasurements.length; i++) {
@@ -56,12 +48,8 @@ public class Box implements GameObject, MoveableObject {
 			}
 		}
 		
-		//radii = new double[]{largest(halfmeasurements[1], halfmeasurements[2]), largest(halfmeasurements[0], halfmeasurements[2]), largest(halfmeasurements[0], halfmeasurements[1])};
-		
-		dimensions = halfmeasurements;
-		
 		normals = new double[6][3];
-		updateNormals();
+		updateNormals(); //set smoe normals in case we don't rotate from the start
 		
 		rotVector = new double[3];
 		moveVector = new double[3];
@@ -69,6 +57,7 @@ public class Box implements GameObject, MoveableObject {
 	
 	@Override
 	public void draw(GL2 gl) {
+		
 		gl.glBegin(GL2.GL_QUADS);
 			//set "material" of wall, or rather the light reflection behaviour 
 			float[] rgba = new float[] {(float)color[0],(float)color[1],(float)color[2], 1.0f};
@@ -77,30 +66,26 @@ public class Box implements GameObject, MoveableObject {
 	        gl.glMaterialf(GL.GL_FRONT, GLLightingFunc.GL_SHININESS, 0.3f);
 	        
 	        
-	        //gl.glNormal3d(-Math.sin(zrot),Math.sin(xrot) -Math.cos(zrot) , -Math.sin(xrot));
 	        gl.glNormal3dv(normals[0], 0);
 	        
 	        for(int i = 0; i < 8; i++) {
 				gl.glVertex3dv(corners[i], 0);
 				if(i == 3) {
-					//gl.glNormal3d(Math.sin(zrot), Math.cos(zrot) - Math.sin(xrot), Math.sin(xrot));
 					gl.glNormal3dv(normals[1], 0);
 				}
 			}
-	        
-	        //gl.glNormal3d(Math.sin(yrot), -Math.sin(xrot), Math.sin(xrot) - Math.cos(yrot));
-	        gl.glNormal3dv(normals[2], 0);
-	        for (int i = 0; i < 3; i += 2) {
+
+	       gl.glNormal3dv(normals[2], 0);
+	       
+	       for (int i = 0; i < 3; i += 2) {
 				gl.glVertex3dv(corners[i], 0);
 				gl.glVertex3dv(corners[i + 1], 0);
 				gl.glVertex3dv(corners[i + 5], 0);
 				gl.glVertex3dv(corners[i + 4], 0);
-				
-				//gl.glNormal3d(-Math.sin(yrot), Math.sin(xrot), Math.cos(yrot) - Math.sin(xrot));
+			
 				gl.glNormal3dv(normals[3], 0);
 			}
 	        
-	        //gl.glNormal3d(Math.sin(zrot) - Math.cos(yrot), Math.sin(zrot), -Math.sin(yrot));
 	        gl.glNormal3dv(normals[4], 0);
 	        
 	        gl.glVertex3dv(corners[0], 0);
@@ -108,7 +93,6 @@ public class Box implements GameObject, MoveableObject {
 			gl.glVertex3dv(corners[7], 0);
 			gl.glVertex3dv(corners[3], 0);
 	        
-			//gl.glNormal3d(Math.cos(yrot) - Math.sin(zrot), -Math.sin(zrot), Math.sin(yrot));
 			gl.glNormal3dv(normals[5], 0);
 			
 	        gl.glVertex3dv(corners[1], 0);
@@ -116,21 +100,58 @@ public class Box implements GameObject, MoveableObject {
 			gl.glVertex3dv(corners[6], 0);
 			gl.glVertex3dv(corners[2], 0);
 		
-        
         gl.glEnd();
+        
 	}
 	/**
 	 * recalculates every planes (sides) normal based on the current rotation status of the Box
 	 */
 	private void updateNormals() {
-		normals[0] = new double[]{-Math.sin(zrot),					Math.sin(xrot) -Math.cos(zrot) ,  	-Math.sin(xrot)};
-		normals[1] = new double[]{Math.sin(zrot),  					Math.cos(zrot) - Math.sin(xrot),  	Math.sin(xrot)};
-		normals[2] = new double[]{Math.sin(yrot), 					-Math.sin(xrot),  					Math.sin(xrot) - Math.cos(yrot)};
-		normals[3] = new double[]{-Math.sin(yrot), 					Math.sin(xrot),  					Math.cos(yrot) - Math.sin(xrot)};
-		normals[4] = new double[]{Math.sin(zrot) - Math.cos(yrot), 	Math.sin(zrot),  					-Math.sin(yrot)};
-		normals[5] = new double[]{Math.cos(yrot) - Math.sin(zrot), 	-Math.sin(zrot),  					Math.sin(yrot)};
+		//We take three points from the surface, make two vectors and cross them to get the surface normal
+		//The three points are three of the corners ending this surface. So if we let A, B and C be three corners
+		//The order of them must be clockwise when viewed opposite the normal 
+		//(yes I know that's not usually the case, but since I accidentally have flipped the axles this is suddenly a left-handed coordinate system, and this is the least of the problems that has caused me) 
+		//Anyway, given that, the formula for the surface normal is (B-A) x (C-A)
+		
+		normals[0] = crossProduct(vectorFromPoints(corners[1], corners[0]),vectorFromPoints(corners[2], corners[0]));
+		normals[2] = crossProduct(vectorFromPoints(corners[4], corners[0]),vectorFromPoints(corners[5], corners[0]));
+		normals[4] = crossProduct(vectorFromPoints(corners[3], corners[0]),vectorFromPoints(corners[7], corners[0]));
+		
+		//The odd numbered planes are always directly opposite an even numbered plane, so we just invert these
+		for (int i = 1; i < normals.length; i += 2) {
+			normals[i][0] = -normals[i - 1][0];
+			normals[i][1] = -normals[i - 1][1];
+			normals[i][2] = -normals[i - 1][2];
+		}
+		
 	}
-
+	
+	/**
+	 * The cross product of two vectors
+	 * @param v1
+	 * @param v2
+	 * @return
+	 */
+	private double[] crossProduct(double[] v1, double[] v2) {
+		return new double[] {
+				v1[1] * v2[2] - v1[2] * v2[1],
+				v1[2] * v2[0] - v1[0] * v2[2],
+				v1[0] * v2[1] - v1[1] * v2[0]
+		};
+	}
+	
+	/**
+	 * Calculates a vector from a given point to another by (add - sub)
+	 * @param add
+	 * @param sub
+	 * @return
+	 */
+	private double[] vectorFromPoints(double[] add, double[] sub) {
+		return new double[] { 
+				add[0] - sub[0], 
+				add[1] - sub[1], 
+				add[2] - sub[2]};
+	}
 	
 	@Override
 	public double[] deltaX() {
@@ -161,28 +182,81 @@ public class Box implements GameObject, MoveableObject {
 
 	@Override
 	public void rotate(long timelasted, GameObject[] otherObjects) {
-		xrot += rotVector[0] * timelasted/1000000000;
-		yrot += rotVector[1] * timelasted/1000000000;
-		zrot += rotVector[2] * timelasted/1000000000;
+		double xrot = rotVector[0] * timelasted/1000000000;
+		double yrot = rotVector[1] * timelasted/1000000000;
+		double zrot = rotVector[2] * timelasted/1000000000;
 		
-		//double[] rotamount = new double[] {rotVector[0] * timelasted/1000000000, rotVector[1] * timelasted/1000000000,rotVector[2] * timelasted/1000000000};
+		//Nothing to rotate, no need to do anything
+		if(xrot == 0 && yrot == 0 && zrot == 0) {
+			return;
+		}
 		
-		//recalculate corner points
+		//we rotate around centerpoint, so transform the positions for origin at the centerpos
+		for (int i = 0; i < corners.length; i++) {
+			for (int j = 0; j < 3; j++) {
+				corners[i][j] -= centerpoint[j]; 
+			}
+		}
 		
-		//WAIT! calculate this from the normals of each surface instead
-		//A vector from the centerpoint to the corner can be calculated by adding together the normals of the three planes meeting in that particalar corner
+		//ok so this is how it works:
+		//A rotation matrix for rotation in that dimension is applied to all corners. These matrices rotate the corner 
+		//(which is a point, or a vector from origin (which as you remember is set to centerpos)) around the origin.
+		//We only do this calculation if there's something to actually rotate
+		//These basic rotation matrices are taken from the wikipedia page for rotation matrix (http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations)
+		//The order in which we rotate doesn't matter (for more info, read some linear algebra)
+		
+		if (xrot != 0) {
+			//The rotation matrix 
+			double[][] Rx = new double[][] { 
+					{ 1, 0, 0},
+					{ 0, Math.cos(xrot), -Math.sin(xrot)},
+					{ 0, Math.sin(xrot), Math.cos(xrot) }
+			};
+			//apply to all corners
+			for (int i = 0; i < corners.length; i++) {
+				corners[i][0] = Rx[0][0] * corners[i][0] + Rx[0][1] * corners[i][1] + Rx[0][2] * corners[i][2];
+				corners[i][1] = Rx[1][0] * corners[i][0] + Rx[1][1] * corners[i][1] + Rx[1][2] * corners[i][2];
+				corners[i][2] = Rx[2][0] * corners[i][0] + Rx[2][1] * corners[i][1] + Rx[2][2] * corners[i][2];
+			}
+		}
+		
+		if (yrot != 0) {
+			double[][] Ry = new double[][] { 
+					{ Math.cos(yrot), 0, Math.sin(yrot)},
+					{ 0, 1, 0},
+					{ -Math.sin(yrot), 0, Math.cos(yrot) }
+			};
+			
+			for (int i = 0; i < corners.length; i++) {
+				corners[i][0] = Ry[0][0] * corners[i][0] + Ry[0][1] * corners[i][1] + Ry[0][2] * corners[i][2];
+				corners[i][1] = Ry[1][0] * corners[i][0] + Ry[1][1] * corners[i][1] + Ry[1][2] * corners[i][2];
+				corners[i][2] = Ry[2][0] * corners[i][0] + Ry[2][1] * corners[i][1] + Ry[2][2] * corners[i][2];
+			}
+		}
+		
+		if (zrot != 0) {
+			double[][] Rz = new double[][] { 
+					{ Math.cos(zrot), -Math.sin(zrot), 0},
+					{ Math.sin(zrot), Math.cos(zrot), 0},
+					{ 0, 0, 1 }
+			};
+			
+			for (int i = 0; i < corners.length; i++) {
+				corners[i][0] = Rz[0][0] * corners[i][0] + Rz[0][1] * corners[i][1] + Rz[0][2] * corners[i][2];
+				corners[i][1] = Rz[1][0] * corners[i][0] + Rz[1][1] * corners[i][1] + Rz[1][2] * corners[i][2];
+				corners[i][2] = Rz[2][0] * corners[i][0] + Rz[2][1] * corners[i][1] + Rz[2][2] * corners[i][2];
+			}
+		}
+		
+		//Now that we've done some rotations, it's time to recalculate the normals to each surface 
 		updateNormals();
 		
-		//corners[0] = normals[4] * dim[0] + normals[0] * dim[1] + normals[2] * dim[2]    
-		corners[0] = addNormals(normals[4], normals[0], normals[2]);
-		corners[1] = addNormals(normals[5], normals[0], normals[2]);
-		corners[2] = addNormals(normals[5], normals[0], normals[3]);
-		corners[3] = addNormals(normals[4], normals[0], normals[3]);
-		corners[4] = addNormals(normals[4], normals[1], normals[2]);
-		corners[5] = addNormals(normals[5], normals[1], normals[2]);
-		corners[6] = addNormals(normals[5], normals[1], normals[3]);
-		corners[7] = addNormals(normals[4], normals[1], normals[3]);
-		//Note how the pattern of the normals correspond to the pattern of + and - of the corners being placed out in the constructors
+		//Normalise them back to original position
+		for (int i = 0; i < corners.length; i++) {
+			for (int j = 0; j < 3; j++) {
+				corners[i][j] += centerpoint[j]; 
+			}
+		}
 		
 	}
 
@@ -192,26 +266,6 @@ public class Box implements GameObject, MoveableObject {
 		
 	}
 	
-	/**
-	 * Adds together the normals (3D vectors) from the centerpoint. 
-	 * This places out the corner by knowing the direction of the normals, which when combined with that vectors length from the centerpoint
-	 * gives an accurate position of the corner. It's very hard to explain this using just text....
-	 * @param x The normal of the plane to which this corner cuts in the X dimension
-	 * @param y The normal of the plane to which this corner cuts in the Y dimension
-	 * @param z The normal of the plane to which this corner cuts in the Z dimension
-	 * @return The new position calculated from this
-	 */
-	private double[] addNormals(double[] x, double[] y, double[] z) {
-		double[] cornerposition = new double[]{centerpoint[0], centerpoint[1], centerpoint[2]};
-		//cornerposition = centerpoint;
-		for (int i = 0; i < 3; i++) {
-			cornerposition[i] += x[i] * dimensions[0];
-			cornerposition[i] += y[i] * dimensions[1];
-			cornerposition[i] += z[i] * dimensions[2];
-		}
-		
-		return cornerposition;
-	}
 
 	@Override
 	public void startMoving(double[] movingVector) {

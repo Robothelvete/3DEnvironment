@@ -19,7 +19,7 @@ public class Player {
 	private static final double buffer = 1.3;
 	
 	public Player() {
-		pos = new double[] { 0.0, 2.0, -10.0 };// TODO
+		pos = new double[] {0, 2, -10 };// TODO
 		moving = new boolean[] {false, false, false, false};
 	}
 
