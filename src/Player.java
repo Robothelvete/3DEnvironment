@@ -29,7 +29,7 @@ public class Player {
 	public void move(long timelasted, GameObject[] otherObjects) { //TODO: make this more pretty
 		//walkingspeed is in other words how long he should have moved this frame
 		double walkingspeed = speed * timelasted/1000000000;
-		
+
 		double[] newpos = new double[]{pos[0], pos[1], pos[2]};
 		
 		for (int i = 0; i < 4; i++) {

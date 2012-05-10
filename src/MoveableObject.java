@@ -5,18 +5,10 @@
  */
 public interface MoveableObject {
 	/**
-	 * Rotates the object on it's rotationvector, and checks for collisions
-	 * @param timelasted - the time passed between the last and this frame
-	 * @param otherObjects - the objects with which to check collisions agaisnt 
+	 * Rotates, moves and in general updates this box and checks for collisions
+	 * @param gameObjects
 	 */
-	public void rotate(long timelasted, GameObject[] otherObjects);
-	
-	/**
-	 * Moves this object along it's movement vector, and checks for collisions
-	 * @param timelasted - the time passed between the last and this frame
-	 * @param otherObjects- the objects with which to check collisions agaisnt 
-	 */
-	public void move(long timelasted, GameObject[] otherObjects);
+	public void takeAction(long timetaken, GameObject[] gameObjects);
 	
 	/**
 	 * Sets this object moving in the direction given by the vector

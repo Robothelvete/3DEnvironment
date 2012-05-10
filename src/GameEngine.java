@@ -165,8 +165,9 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		
 		//move all objects
 		for (int i = 0; i < moveableObjects.length; i++) {
-			moveableObjects[i].move(timeLasted, gameObjects);
-			moveableObjects[i].rotate(timeLasted, gameObjects);
+			/*moveableObjects[i].move(timeLasted, gameObjects);
+			moveableObjects[i].rotate(timeLasted, gameObjects);*/
+			moveableObjects[i].takeAction(timeLasted, gameObjects);
 		}
 		
 		// Render all objects
@@ -279,6 +280,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 						gameObjects[counter] = tmp;
 						moveableObjects[movecounter] = tmp;
 						tmp.startRotating(new double[]{1, 1, 1});
+						tmp.startMoving(new double[]{0, 0, 5});
 						movecounter++;
 						break;
 					}

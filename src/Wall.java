@@ -67,7 +67,9 @@ public class Wall implements GameObject {
 
 	@Override
 	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
-		// TODO Auto-generated method stub
+		if (endpoint[1] < 0) {
+			return new double[]{0,1,0};
+		}
 		return null;
 	}
 
