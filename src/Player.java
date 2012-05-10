@@ -17,6 +17,8 @@ public class Player {
 	private static final double mouseSense = 0.001 * Math.PI;
 	private boolean[] moving;
 	private static final double buffer = 1.3;
+	private MoveableObject heldObject;
+	private double objectBuffer;
 	
 	public Player() {
 		pos = new double[] {0, 2, -10 };// TODO
@@ -85,6 +87,10 @@ public class Player {
 		
 		pos = newpos;
 		
+		if(heldObject != null) {			
+			heldObject.moveTo(new double[] {pos[0] + Math.sin(yrot) * objectBuffer, pos[1] + Math.sin(xrot) * objectBuffer, pos[2] + Math.cos(yrot) * objectBuffer});
+		}
+		
 	}
 	
 	/**TODO:
@@ -138,5 +144,55 @@ public class Player {
 		if (Math.abs(possibleX) < Math.PI / 2) {
 			xrot += deltaY * mouseSense;
 		}
+	}
+	
+	/**
+	 * While the mousebutton is held, drag the object in fron of you
+	 * @param deltaX
+	 * @param deltaY
+	 */
+	public void dragObject(int deltaX, int deltaY) {
+		changeView(deltaX, deltaY);
+		if(heldObject != null) {			
+			heldObject.moveTo(new double[] {pos[0] + Math.sin(yrot) * objectBuffer, pos[1] + Math.sin(xrot) * objectBuffer, pos[2] + Math.cos(yrot) * objectBuffer});
+		}
+	}
+	
+	/**
+	 * Grabs hold of the object in front of you 
+	 * @param gameObjects
+	 */
+	public void grabObject(MoveableObject[] gameObjects) {
+		if (heldObject == null) {
+			double[] handpos = new double[] {pos[0] + Math.sin(yrot) * 3, pos[1] + Math.sin(xrot) * 3, pos[2] + Math.cos(yrot) * 3};
+			for (int i = 0; i < gameObjects.length; i++) {
+				MoveableObject curobj = gameObjects[i]; //all moveable objects are gameobjects
+				
+				// Check if we're in the vicinity on the X axis
+				double[] deltaX = curobj.deltaX();
+				if (handpos[0] >= deltaX[0] && handpos[0] <= deltaX[1]) {
+					// Then the Z axis
+					double[] deltaZ = curobj.deltaZ();
+					if (handpos[2] >= deltaZ[0] && handpos[2] <= deltaZ[1]) {
+						// And finally the Y axis, because this is the axis most likely to give a positive
+						double[] deltaY = curobj.deltaY();
+						if (handpos[1] >= deltaY[0] && handpos[1] <= deltaY[1]) {
+							//take the first object we find
+							heldObject = curobj;
+							
+							objectBuffer = Math.abs(deltaX[0] - deltaX[1]) * 2;
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * Releases the object that was held
+	 */
+	public void realeseObject() {
+		heldObject = null;
 	}
 }

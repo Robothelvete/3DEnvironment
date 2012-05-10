@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -38,7 +39,7 @@ import javax.media.opengl.GLEventListener;
  * @author Robert
  * 
  */
-public class GameEngine implements GLEventListener, KeyListener, MouseMotionListener {
+public class GameEngine implements GLEventListener, KeyListener, MouseMotionListener, MouseListener {
 	static GLU glu = new GLU();
 	static GLCanvas canvas = new GLCanvas();
 	static Frame frame = new Frame("Gameframe");
@@ -130,6 +131,9 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 		// add mouse motion input listener
 		((Component) gLDrawable).addMouseMotionListener(this);
+		
+		((Component) gLDrawable).addMouseListener(this);
+		
 		// center mouse
 		robot.mouseMove(centerX, centerY);
 	}
@@ -279,8 +283,8 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 								parseDoubleArrays(allinfo[3]));
 						gameObjects[counter] = tmp;
 						moveableObjects[movecounter] = tmp;
-						tmp.startRotating(new double[]{1, 1, 1});
-						tmp.startMoving(new double[]{0, 0, 5});
+						//tmp.startRotating(new double[]{1, 1, 1});
+						//tmp.startMoving(new double[]{5, 0, 5});
 						movecounter++;
 						break;
 					}
@@ -379,13 +383,41 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		player.dragObject(centerX - e.getX(), centerY - e.getY());
+		robot.mouseMove(centerX, centerY);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		player.changeView(centerX - e.getX(), centerY - e.getY());
 		robot.mouseMove(centerX, centerY);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		player.grabObject(moveableObjects);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		player.realeseObject();
+		
 	}
 }

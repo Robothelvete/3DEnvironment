@@ -195,101 +195,6 @@ public class Box implements GameObject, MoveableObject {
 		return null;
 	}
 
-	private void rotate(long timelasted) {
-		double dist = timelasted / 1000000000;
-		double xrot = rotVector[0] * dist;
-		double yrot = rotVector[1] * dist;
-		double zrot = rotVector[2] * dist;
-
-		// Nothing to rotate, no need to do anything
-		if (xrot == 0 && yrot == 0 && zrot == 0) {
-			return;
-		}
-
-		// we rotate around centerpoint, so transform the positions for origin at the centerpos
-		for (int i = 0; i < corners.length; i++) {
-			for (int j = 0; j < 3; j++) {
-				corners[i][j] -= centerpoint[j];
-			}
-		}
-
-		// ok so this is how it works:
-		// A rotation matrix for rotation in that dimension is applied to all corners. These matrices rotate the corner
-		// (which is a point, or a vector from origin (which as you remember is set to centerpos)) around the origin.
-		// We only do this calculation if there's something to actually rotate
-		// These basic rotation matrices are taken from the wikipedia page for rotation matrix
-		// (http://en.wikipedia.org/wiki/Rotation_matrix#Basic_rotations)
-		// The order in which we rotate doesn't matter (for more info, read some linear algebra)
-
-		if (xrot != 0) {
-			// The rotation matrix
-			double[][] Rx = new double[][] {
-					{ 1, 0, 0 },
-					{ 0, Math.cos(xrot), -Math.sin(xrot) },
-					{ 0, Math.sin(xrot), Math.cos(xrot) }
-			};
-			// apply to all corners
-			for (int i = 0; i < corners.length; i++) {
-				corners[i][0] = Rx[0][0] * corners[i][0] + Rx[0][1] * corners[i][1] + Rx[0][2] * corners[i][2];
-				corners[i][1] = Rx[1][0] * corners[i][0] + Rx[1][1] * corners[i][1] + Rx[1][2] * corners[i][2];
-				corners[i][2] = Rx[2][0] * corners[i][0] + Rx[2][1] * corners[i][1] + Rx[2][2] * corners[i][2];
-			}
-		}
-
-		if (yrot != 0) {
-			double[][] Ry = new double[][] {
-					{ Math.cos(yrot), 0, Math.sin(yrot) },
-					{ 0, 1, 0 },
-					{ -Math.sin(yrot), 0, Math.cos(yrot) }
-			};
-
-			for (int i = 0; i < corners.length; i++) {
-				corners[i][0] = Ry[0][0] * corners[i][0] + Ry[0][1] * corners[i][1] + Ry[0][2] * corners[i][2];
-				corners[i][1] = Ry[1][0] * corners[i][0] + Ry[1][1] * corners[i][1] + Ry[1][2] * corners[i][2];
-				corners[i][2] = Ry[2][0] * corners[i][0] + Ry[2][1] * corners[i][1] + Ry[2][2] * corners[i][2];
-			}
-		}
-
-		if (zrot != 0) {
-			double[][] Rz = new double[][] {
-					{ Math.cos(zrot), -Math.sin(zrot), 0 },
-					{ Math.sin(zrot), Math.cos(zrot), 0 },
-					{ 0, 0, 1 }
-			};
-
-			for (int i = 0; i < corners.length; i++) {
-				corners[i][0] = Rz[0][0] * corners[i][0] + Rz[0][1] * corners[i][1] + Rz[0][2] * corners[i][2];
-				corners[i][1] = Rz[1][0] * corners[i][0] + Rz[1][1] * corners[i][1] + Rz[1][2] * corners[i][2];
-				corners[i][2] = Rz[2][0] * corners[i][0] + Rz[2][1] * corners[i][1] + Rz[2][2] * corners[i][2];
-			}
-		}
-
-		// Now that we've done some rotations, it's time to recalculate the normals to each surface
-		updateNormals();
-
-		// Normalise them back to original position
-		for (int i = 0; i < corners.length; i++) {
-			for (int j = 0; j < 3; j++) {
-				corners[i][j] += centerpoint[j];
-			}
-		}
-
-	}
-
-	private void move(long timelasted) {
-		double dist = timelasted / 1000000000;
-		/*
-		 * double[] newpos = new double[]{centerpoint[0], centerpoint[1], centerpoint[2]};
-		 * 
-		 * newpos[0] += dist * moveVector[0]; newpos[1] += dist * moveVector[1]; newpos[2] += dist * moveVector[2];
-		 * 
-		 * centerpoint = newpos;
-		 */
-		centerpoint[0] += dist * moveVector[0];
-		centerpoint[1] += dist * moveVector[1];
-		centerpoint[2] += dist * moveVector[2];
-
-	}
 
 	@Override
 	public void startMoving(double[] movingVector) {
@@ -440,6 +345,21 @@ public class Box implements GameObject, MoveableObject {
 								double[] collNormal = curobj.collisionNormal(corners[j], corner);
 								if (collNormal != null) {
 									//Ok so this corner has hit something
+									//System.out.println(moveVector[0] + ", " + moveVector[1] + ", " + moveVector[2]);
+									double[] newmov = bounceVector(moveVector, collNormal, 0.5); 
+									//moveVector = 
+									
+									/*System.out.println(newpos[0] + ", " + newpos[1] + ", " + newpos[2]);
+									System.out.println(corner[0] + ", " + corner[1] + ", " + corner[2]);
+									newpos[0] += (newmov[0] - moveVector[0] ) * dist * (1/0.5);
+									newpos[1] += (newmov[1] - moveVector[1]) * dist * (1/0.5);
+									newpos[2] += (newmov[2] - moveVector[2]) * dist * (1/0.5);
+									moveVector = newmov;
+									//System.out.println(corner[0] 
+									System.out.println(newpos[0] + ", " + newpos[1] + ", " + newpos[2]);
+									//System.out.println(moveVector[0] + ", " + moveVector[1] + ", " + moveVector[2]);
+									System.out.println("");*/
+									break;
 								}
 							}
 						}
@@ -447,11 +367,55 @@ public class Box implements GameObject, MoveableObject {
 				}
 			}
 		}
-
+		
+		
+		
 		centerpoint = newpos;// set the new centerpoint to where we have moved
 		corners = newcorners;
 	}
 
+	
+	/**
+	 * Calculates the new movement vector after bounce against a normal
+	 * @param v The movement vector
+	 * @param n The normal to the surface we bounce against
+	 * @param elasticity The energy left after impact, must be < 1
+	 * @return
+	 */
+	private double[] bounceVector(double[] v, double[] n, double elasticity) {
+		double dp = dotProduct(v,n);
+		double[] u = new double[] { n[0] * dp, n[1] * dp, n[2] * dp};
+		
+		double[] w = vectorFromPoints(v, u); //Even though these two are technically vectors already, it does the same thing: w = v-u
+		
+		return vectorFromPoints(w, new double[] { u[0] * elasticity, u[1] * elasticity, u[2] * elasticity});
+	}
+	
+	/**
+	 * Calculates the dot product for two vectors
+	 * @param one
+	 * @param two
+	 * @return
+	 */
+	private double dotProduct(double[] one, double[] two) {
+		double returnvalue = 0;
+		for(int i = 0; i < one.length; i++) {
+			returnvalue += one[i] * two[i];
+		}
+		
+		return returnvalue;
+	}
+
+	@Override
+	public void moveTo(double[] pos) {
+		for (int i = 0; i < corners.length; i++) {
+			for (int j = 0; j < 3; j++) {
+				corners[i][j] += pos[j] - centerpoint[j];
+			}
+		}
+		centerpoint = pos;
+	}
+	
 	/*
 	 * private double largest(double a, double b) { if(a>b) return a; else return b; }
 	 */

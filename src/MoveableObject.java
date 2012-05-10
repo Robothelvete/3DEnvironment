@@ -3,7 +3,7 @@
  * @author Robert
  *
  */
-public interface MoveableObject {
+public interface MoveableObject extends GameObject {
 	/**
 	 * Rotates, moves and in general updates this box and checks for collisions
 	 * @param gameObjects
@@ -21,4 +21,10 @@ public interface MoveableObject {
 	 * @param rotationVector
 	 */
 	public void startRotating(double[] rotationVector);
+	
+	/**
+	 * Move the object to this position
+	 * @param pos
+	 */
+	public void moveTo(double[] pos);
 }

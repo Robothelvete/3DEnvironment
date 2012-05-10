@@ -45,15 +45,16 @@ public class Wall implements GameObject {
 	public double[] deltaX() {
 		double[] minmax = new double[2];
 		minmax[0] = corners[0][0];
-		minmax[1] = corners[3][0];
+		minmax[1] = corners[2][0];
 		return minmax;
 	}
 
 	@Override
 	public double[] deltaY() {
 		double[] minmax = new double[2];
-		minmax[0] = corners[0][1];
-		minmax[1] = corners[3][1];
+		//minmax[0] = corners[0][1];
+		minmax[0] = -10.0;//TODO fix this ugly hack
+		minmax[1] = corners[2][1];
 		return minmax;
 	}
 
@@ -61,7 +62,7 @@ public class Wall implements GameObject {
 	public double[] deltaZ() {
 		double[] minmax = new double[2];
 		minmax[0] = corners[0][2];
-		minmax[1] = corners[3][2];
+		minmax[1] = corners[2][2];
 		return minmax;
 	}
 
