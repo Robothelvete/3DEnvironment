@@ -10,6 +10,9 @@ import javax.media.opengl.fixedfunc.GLLightingFunc;
 public class Wall implements GameObject {
 	private double[][] corners;
 	private double[] color;
+	private double[] normal;
+	private double[] angles;
+	
 	//note to self: three points (corners) are needed 
 	public Wall(double[] first, double [] second, double[] third, double[] color) {
 		corners = new double[4][3]; //Four corners in three dimensions
@@ -21,6 +24,9 @@ public class Wall implements GameObject {
 		corners[3] = new double[]{third[0] + (first[0] - second[0]), third[1] + (first[1] - second[1]), third[2] + (first[2] - second[2]) };
 		
 		this.color = color;
+		
+		normal = Helpers.normalize(Helpers.crossProduct(Helpers.vectorFromPoints(corners[0], corners[2]), Helpers.vectorFromPoints(corners[0], corners[1])));
+		
 	}
 	
 	@Override
@@ -68,15 +74,15 @@ public class Wall implements GameObject {
 
 	@Override
 	public double[] collisionNormal(double[] startpoint, double[] endpoint) {
-		if (endpoint[1] < 0) {
+		/*if (endpoint[1] < 0) {
 			return new double[]{0,1,0};
-		}
-		return null;
+		}*/
+		return normal;
+		
 	}
 
 	@Override
 	public double[] collisionNormal(double[] startpoint, double[] endpoint, double buffersize) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

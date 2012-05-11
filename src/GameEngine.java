@@ -169,9 +169,12 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 		
 		//move all objects
 		for (int i = 0; i < moveableObjects.length; i++) {
-			/*moveableObjects[i].move(timeLasted, gameObjects);
-			moveableObjects[i].rotate(timeLasted, gameObjects);*/
-			moveableObjects[i].takeAction(timeLasted, gameObjects);
+			if (!player.isHoldingObject(moveableObjects[i])) {
+				/*moveableObjects[i].move(timeLasted, gameObjects);
+				moveableObjects[i].rotate(timeLasted, gameObjects);*/
+				moveableObjects[i].applyGravity(timeLasted, 9.0);
+				moveableObjects[i].takeAction(timeLasted, gameObjects);
+			}
 		}
 		
 		// Render all objects
@@ -283,8 +286,15 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 								parseDoubleArrays(allinfo[3]));
 						gameObjects[counter] = tmp;
 						moveableObjects[movecounter] = tmp;
-						//tmp.startRotating(new double[]{1, 1, 1});
+						//tmp.startRotating(new double[]{0, 2, 0});
 						//tmp.startMoving(new double[]{5, 0, 5});
+						movecounter++;
+						break;
+						
+					case "sphere":
+						Sphere sphere = new Sphere(glu, parseDoubleArrays(allinfo[1]), Double.parseDouble(allinfo[2]), parseDoubleArrays(allinfo[3]), Double.parseDouble(allinfo[4]) );
+						gameObjects[counter] = sphere;
+						moveableObjects[movecounter] = sphere;
 						movecounter++;
 						break;
 					}
@@ -383,7 +393,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		player.dragObject(centerX - e.getX(), centerY - e.getY());
+		player.dragObject(centerX - e.getX(), centerY - e.getY(), centerX * 2, centerY * 2);
 		robot.mouseMove(centerX, centerY);
 	}
 
@@ -413,6 +423,7 @@ public class GameEngine implements GLEventListener, KeyListener, MouseMotionList
 	@Override
 	public void mousePressed(MouseEvent e) {
 		player.grabObject(moveableObjects);
+		
 	}
 
 	@Override

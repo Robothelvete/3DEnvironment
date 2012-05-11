@@ -74,10 +74,15 @@ public class Player {
 						//Ok, so we're in this objects interaction box, time to do a more precise detection
 						double[] collNormal = curobj.collisionNormal(pos, newpos, buffer);
 						if (collNormal != null) {
-							//slide along the wall by nullifing the movement by the normal
-							newpos[0] = newpos[0] + Math.abs(newpos[0] - pos[0]) * collNormal[0];
-							newpos[1] = newpos[1] + Math.abs(newpos[1] - pos[1]) * collNormal[1];
-							newpos[2] = newpos[2] + Math.abs(newpos[2] - pos[2]) * collNormal[2];
+							if (curobj instanceof MoveableObject) {
+								((MoveableObject) curobj).addMovement(new double[] {-collNormal[0], -collNormal[1], -collNormal[2]});
+								//If it's a moveableObject, get that one started in the opposite direction instead
+							} else {
+								//slide along the wall by nullifing the movement by the normal
+								newpos[0] = newpos[0] + Math.abs(newpos[0] - pos[0]) * collNormal[0];
+								newpos[1] = newpos[1] + Math.abs(newpos[1] - pos[1]) * collNormal[1];
+								newpos[2] = newpos[2] + Math.abs(newpos[2] - pos[2]) * collNormal[2];
+							}
 						}
 						
 					}
@@ -85,11 +90,13 @@ public class Player {
 			}
 		}
 		
+		if(heldObject != null && (newpos[0] != pos[0] || newpos[1] != pos[1] || newpos[2] != pos[2])) {			
+			heldObject.moveTo(new double[] {newpos[0] + Math.sin(yrot) * objectBuffer, newpos[1] + Math.sin(xrot) * objectBuffer, newpos[2] + Math.cos(yrot) * objectBuffer});
+		}
+		
 		pos = newpos;
 		
-		if(heldObject != null) {			
-			heldObject.moveTo(new double[] {pos[0] + Math.sin(yrot) * objectBuffer, pos[1] + Math.sin(xrot) * objectBuffer, pos[2] + Math.cos(yrot) * objectBuffer});
-		}
+		
 		
 	}
 	
@@ -147,14 +154,20 @@ public class Player {
 	}
 	
 	/**
-	 * While the mousebutton is held, drag the object in fron of you
+	 * While the mousebutton is held, drag the object in front of you
 	 * @param deltaX
 	 * @param deltaY
 	 */
-	public void dragObject(int deltaX, int deltaY) {
+	public void dragObject(int deltaX, int deltaY, int totalX, int totalY) {
 		changeView(deltaX, deltaY);
 		if(heldObject != null) {			
 			heldObject.moveTo(new double[] {pos[0] + Math.sin(yrot) * objectBuffer, pos[1] + Math.sin(xrot) * objectBuffer, pos[2] + Math.cos(yrot) * objectBuffer});
+			//System.out.println((double) deltaX/totalX);
+			double rotation =  (double)deltaX/ (double)totalX;
+			//System.out.println( yrot * Math.PI * 2.0);
+			heldObject.rotate(new double[] {0, rotation * Math.PI * 2.0, 0});
+			//heldObject.rotate(new double[] {deltaX/(Math.PI*2), deltaY/(Math.PI*2), deltaX/(Math.PI*2) });
+			//heldObject.rotate(new double[] {0,0.01,0});
 		}
 	}
 	
@@ -179,14 +192,23 @@ public class Player {
 						if (handpos[1] >= deltaY[0] && handpos[1] <= deltaY[1]) {
 							//take the first object we find
 							heldObject = curobj;
-							
+							heldObject.startMoving(new double[]{0,0,0}); //Stop moving the object
+							heldObject.startRotating(new double[]{0,0,0}); //and stop rotation
 							objectBuffer = Math.abs(deltaX[0] - deltaX[1]) * 2;
+							
 							return;
 						}
 					}
 				}
 			}
 		}
+	}
+	
+	public boolean isHoldingObject(MoveableObject obj) {
+		if (heldObject != null && obj.equals(heldObject)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

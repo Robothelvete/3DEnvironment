@@ -27,4 +27,22 @@ public interface MoveableObject extends GameObject {
 	 * @param pos
 	 */
 	public void moveTo(double[] pos);
+	
+	/**
+	 * Rotates the box this much
+	 * @param amount
+	 */
+	public void rotate(double[] amount);
+	
+	/**
+	 * Applies gravity
+	 * @param grav
+	 */
+	public void applyGravity(long timetaken, double grav);
+	
+	/**
+	 * Adds movement to already moving object
+	 * @param movingVector
+	 */
+	public void addMovement(double[] movingVector);
 }
