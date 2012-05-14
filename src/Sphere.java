@@ -13,7 +13,7 @@ public class Sphere implements MoveableObject {
 	private int stacks = 32;
 	private double[] moveVector;
 	private double elasticity;
-	private double friction = 0.2;
+	private double friction = 0.4;
 	private boolean atground = false;
 	
 	
@@ -105,14 +105,21 @@ public class Sphere implements MoveableObject {
 							double[] collNormal = curobj.collisionNormal(pos, checkerpos);
 							if (collNormal != null) {
 								//bounce
-								moveVector = Helpers.bounceVector(moveVector, collNormal, elasticity);
+								double[] newmov = Helpers.bounceVector(moveVector, collNormal, elasticity);
 								
-								//set it at the edge
 								for (int j = 0; j < 3; j++) { 
-									newpos[j] += collNormal[j] * dist * moveVector[j];
+									newpos[j] += collNormal[j] * dist * -moveVector[j];
 									//while we're looping, apply friction
-									moveVector[j] -= moveVector[j] * (1 - collNormal[j]) * friction;
+									
+									//newmov[j] -= newmov[j] * (1 - collNormal[j]) * friction;
+									//newmov[j] = Helpers.round(newmov[j],8);
 								}
+								//System.out.println(moveVector[0] + ", " + moveVector[1]+ ", " + moveVector[2]);
+								moveVector = newmov;
+								//System.out.println(moveVector[0] + ", " + moveVector[1]+ ", " + moveVector[2]);
+								//System.out.println("");
+								//set it at the edge
+								
 								
 								if (collNormal[1] == 1 && moveVector[1] < 0.6 && moveVector[1] > 0 ) {
 									atground = true;
@@ -124,7 +131,12 @@ public class Sphere implements MoveableObject {
 				}
 			}
 		}
-
+		if (atground) {
+			for (int j = 0; j < 3; j++) {
+				//moveVector[j] = moveVector[j] * friction;
+				moveVector[j] -= Math.signum(moveVector[j]) * friction;
+			}
+		}
 		pos = newpos;
 	}
 

@@ -490,7 +490,7 @@ public class Box implements GameObject, MoveableObject {
 		
 		//make them orthogonal again
 		//orthogonalize(corners, newcorners, 0);
-		orthogonalize(corners, newcorners, 2);
+		//orthogonalize(corners, newcorners, 2);
 		//orthogonalize(corners, newcorners, 0);
 		//orthogonalize(corners, newcorners, 4);
 		
@@ -637,8 +637,8 @@ public class Box implements GameObject, MoveableObject {
 
 	@Override
 	public void applyGravity(long timetaken, double grav) {
-		double dist = (double) timetaken / 1000000000;
-		moveVector[1] -= dist * grav; 
+		/*double dist = (double) timetaken / 1000000000;
+		moveVector[1] -= dist * grav;*/ 
 	}
 
 	public void addMovement(double[] movingVector) {

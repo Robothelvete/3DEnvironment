@@ -27,6 +27,15 @@ public class Wall implements GameObject {
 		
 		normal = Helpers.normalize(Helpers.crossProduct(Helpers.vectorFromPoints(corners[0], corners[2]), Helpers.vectorFromPoints(corners[0], corners[1])));
 		
+		double deltaX = corners[0][0] - corners[2][0];
+		double deltaZ = corners[2][2] - corners[0][2];
+		double deltaY = corners[2][1] - corners[0][1];
+		
+		angles = new double[3];
+		angles[0] = Math.atan2(deltaZ, deltaX);
+		angles[1] = Math.abs(Math.atan2(deltaX, deltaY));
+		
+	
 	}
 	
 	@Override
@@ -77,7 +86,26 @@ public class Wall implements GameObject {
 		/*if (endpoint[1] < 0) {
 			return new double[]{0,1,0};
 		}*/
-		return normal;
+		
+		double distXend = corners[1][0] - endpoint[0];
+		double distZend = endpoint[2] - corners[1][2];
+		double distYend = corners[1][1] - endpoint[1];
+		boolean overorunder = false;
+		//System.out.println(Math.atan2(distXend, distYend) + ", " + angles[1]); 
+		if (Math.atan2(distXend, distYend) < angles[1]) {
+			overorunder = true;
+		}
+		
+		double distXstart = corners[1][0] - startpoint[0];
+		double distZstart = startpoint[2] - corners[1][2];
+		double distYstart = corners[1][1] - startpoint[1];
+		
+		//System.out.println(Math.atan2(distXstart, distYstart) + ", " + angles[1]);
+		if (Math.atan2(distXstart, distYstart) > angles[1] && overorunder) {
+			return normal;
+		}
+		
+		return null;
 		
 	}
 
